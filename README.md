@@ -246,7 +246,7 @@
     app.get("/profile", hndleProfile);
 ````
 * npm start -> 브라우저에 http://localhost:4000/ or /profile 경로로 이동해주면 아래처럼 로깅정보가 찍힌다.
-<img src="./images/tiny.png" width="500" height="500" />
+<img src="./images/tiny.png" width="700" />
 
 #### morgan - combined옵션 사용해보기
 * 어쩐종류 접속인지, 어떤 브라우저인지 등의 정보 표시
@@ -263,7 +263,7 @@
     app.get("/profile", hndleProfile);
 ````
 * npm start -> 브라우저에 http://localhost:4000/ or /profile 경로로 이동해주면 아래처럼 로깅정보가 찍힌다.
-<img src="./images/combined.png" width="500" height="500" />
+<img src="./images/combined.png" width="700"/>
 
 ### middleware - helmet 설치 후 사용해보기  ->  npm install helmet
 * 보안관련 미들웨어 
@@ -317,4 +317,4 @@
 
 ````
 * 즉 위 코드에서 handleHome 는 실행이 안된다.
-<img src="./images/combined.png" width="300" height="300" />
+<img src="./images/combined.png" width="500" />
