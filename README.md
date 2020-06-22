@@ -46,6 +46,8 @@
 3. 4000으로 Port번호 지정하고 app.listen 테스트
     * app이 4000포트를 listen하면 콜백함수 실행
 ```javascript
+    // index.js
+
     const express = require('express') // express를 import
     // 즉 나의 폴더 어딘가에서 express를 찾는다. 없다면 node_modules에서 찾아서 불러온다.
     const app = express() // 불러온 express를 실행해서 app생성
@@ -75,6 +77,8 @@
 * 웹사이트처럼 작동하려면 re.send에 메시지가 아닌 html,css,JS 등 파일이 전송되야한다.
     * 본 프젝에서 도전해볼 것 이다.
 ```javascript
+    // index.js
+
     // CB 생성
     function handleHome(req, res) {
       res.send("Hello from home") // 브라우저에 뜨는 메세지
@@ -153,10 +157,71 @@
 * 바벨이 변환을 완료할때까지 기다리는 시간이 부족해서 서버가 자동으로 실행되는게 2번씩 실행될때가 있었다.
 * 바벨의 변환시간을 2초정도 기다려 주기위해 package.json - scripts 변경
 
-      ```javascript
-      // package.json
+  ```javascript
+  // package.json
           
-       "scripts": {
-       "start": "nodemon --exec babel-node index.js --delay 2"
-       },
+    "scripts": {
+    "start": "nodemon --exec babel-node index.js --delay 2"
+    },
+   ```
+  
+## express - middleware
+* express에서 모든 함수는 middleware가 될 수 있다.
+* exspress에서 middleware란 유저와 마지막 응답사이에 존재하는 것이다..?
+    * 말 그대로 중간에 존재하는 소프트 웨어
+* 웹사이트에 접속 - index.js실행 - app이 라우트 존재하는지 살펴본다.
+    * 라우트 찾으면 인자로 넣은 CB(응답을 실행하는)실행 하게되는데 라우트요청과 CB사이에 미들웨어가 실행된다.
+    * test (유저의 home "/"요청과 handleHome 사이에 미들웨어 추가)
+    
+    ````javascript
+  // index.js
+  
+  
+  // CB
+  const handleHome = (req, res) => res.send("Hello from home"); 
+  
+  // middleware CB
+  const betweenHome = () => console.log("I'm between");
+  
+  // Routes
+  app.get("/", betweenHome, handleHome);
+  
+  ````
+    * 하지만 위 코드는 / 라우트로 갈 경우 터미널에 I'm between는 찍히지만 handleHome 는 실행되지않고 계속 로딩중이게 된다.
+        * 브라우저로부터 온 요청을 계속 처리할지에 대해, 그 오쳥이 handleHome으로 처리될지 등의 권한을 주지 않았기 때문이다.
+        * 즉 요청을 계속 처리할 권한을 줘야한다.
+        
+            ````javascript
+          // index.js
+          // next라는 key이용해서 다음 실행권한주기
           
+         
+          // CB 이게 마지막 함수이므로 next인자 필요없다.
+          const handleHome = (req, res) => res.send("Hello from home");
+          
+          // middleware CB 즉 middleware CB함수에만 next인자가 들어간다.
+          const betweenHome = (req,res,next) => {
+            console.log("I'm between");
+            next(); // 다음 함수를 실행하게 해줌
+          };
+          
+          // Routes
+          app.get("/", betweenHome, handleHome);
+          
+          ````
+        * 즉 middleware CB함수에만 next인자가 들어간다. handleHome은 마지막 함수이므로 next인자가 필요없다.
+        * 하지만 이 경우는 middleware를 "/'라우트에만 사용한 경우 
+        * 전체적으로 사용하려면? (코드의 순서가 굉장히 중요하다)
+        
+        ````javascript
+          // index.js
+      
+          // middlewares 위치중요
+          app.use(betweenHome) // 미들웨어를 전체 라우트에 사용
+          
+          // Routes
+          app.get("/", handleHome);
+          app.get("/profile", handleProfile);
+      
+        ````
+* 즉 middleware 는 코드 내 위치가 중요하다.
