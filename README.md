@@ -225,3 +225,96 @@
       
         ````
 * 즉 middleware 는 코드 내 위치가 중요하다.
+
+### middleware - Morgan 설치 후 사용해보기  ->  npm install morgan
+* Morgan ? logging에 도움을 준다. 
+* logging이란? 무슨일이 어디서 일어났는지 기록하는 것 이다.
+* morgan은 몇가지 로깅옵션들이 있다.
+* 설치 후 index.js 에 import morgan from "morgan"; 해주기 
+
+#### morgan - tiny옵션 사용해보기
+* 아래처럼 app.use 코딩해준 후 
+````javascript
+
+    // index.js
+    
+    // middlewares
+    app.use(morgan("tiny"))
+
+    // Routes
+    app.get("/", handleHome);
+    app.get("/profile", hndleProfile);
+````
+* npm start -> 브라우저에 http://localhost:4000/ or /profile 경로로 이동해주면 아래처럼 로깅정보가 찍힌다.
+<img src="./images/tiny.png" width="500" height="500" />
+
+#### morgan - combined옵션 사용해보기
+* 어쩐종류 접속인지, 어떤 브라우저인지 등의 정보 표시
+* 아래처럼 app.use 코딩해준 후 
+````javascript
+
+    // index.js
+    
+    // middlewares
+    app.use(morgan("combined"))
+  
+    // Routes
+    app.get("/", handleHome);
+    app.get("/profile", hndleProfile);
+````
+* npm start -> 브라우저에 http://localhost:4000/ or /profile 경로로 이동해주면 아래처럼 로깅정보가 찍힌다.
+<img src="./images/combined.png" width="500" height="500" />
+
+### middleware - helmet 설치 후 사용해보기  ->  npm install helmet
+* 보안관련 미들웨어 
+* 설치 후 index.js 에 import helmet from "morgan"; 해주기 
+* index.js에서 미들웨어 위치에 app.use(helmet())추가
+
+### middleware - body-parser 설치 후 사용해보기  ->  npm install body-parser
+* body로부터 정보를 얻을 수 있게 해준다.
+* 누군가가 form을 채워서 전송하게 된다면 그 form은 서버에 의해서 받아져야한 한다. 특정한 형태(옵션)로.
+* form을 받았을 때 그 데이터를 갖고있는 requestObject에 접근할 수 있어야 하므로 body-parser 사용해야한다.
+* 옵션을 정의해줘야 한다. (=> 서버가 유저로부터 받은 데이터를 이해하는 방법)
+* 옵션들에 대해서 다 알아야 한다. 내 무엇을 전송하는지 알 수 있어야 하니까.
+    * bodyParser.json
+    * bodyParser.text
+    * bodyParser.urlencoded
+* 설치 후 index.js 에 import bodyParser from "body-parser"; 해주기 
+
+    ````javascript
+      // index.js
+  
+      // middlewares
+  
+      app.use(bodyParser.json()) // json 받으면 이해하기
+      app.use(bodyParser.urlencoded({extended : true}))
+  
+    ````
+
+### middleware - cookie-parser 설치 후 사용해보기  ->  npm install cookie-parser
+* cookie를 다루는데 도와준다. 유저로부터 받은 cookie를 이해하는 방법
+* session을 다루기 위해서 cookie에 유저정보를 저장한다.
+* 설치 후 index.js 에 import cookieParser from "cookie-parser"; 해주기 
+
+
+### middleware 가 연결을 끊게할 수도 있다.
+* 원한다면 미들웨어로 연결을 끊을 수 있다.
+* 미들웨어가 res.sent를 실행하는 함수를 발동하면 (next()가 있어도) 연결이 끊긴다.
+````javascript
+    // index.js
+    
+    // CB
+    const handleHome = (req, res) => res.send("Hello from home"); // 브라우저에 뜨는 메세지
+
+    // middlewares
+    const middleware = (req, res, next) => {
+      res.send("not happening");
+      next()
+    };
+    
+    // Routes
+    app.get("/", middleware, handleHome);
+
+````
+* 즉 위 코드에서 handleHome 는 실행이 안된다.
+<img src="./images/combined.png" width="300" height="300" />

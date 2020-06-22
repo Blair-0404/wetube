@@ -1,24 +1,28 @@
+// express import
 import express from "express"// 바벨 테스트 위해서 ES6문법으로 express import
 
-// const express = require('express') // express를 import
-// 즉 나의 폴더 어딘가에서 express를 찾는다. 없다면 node_modules에서 찾아서 불러온다.
+// middleware import
+import helmet from "helmet";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+
+// Server 생성
 const app = express() // 불러온 express를 실행해서 app생성
 const PORT = 4000; // 열어줄 포트번호 지정
 
-// CB 이게 마지막 함수이므로 next인자 필요없다.
+// CB
 const handleListening = () => console.log(`Listening on : http://localhost:${PORT}`); // 브라우저에 뜨는 메세지
 const handleHome = (req, res) => res.send("Hello from home"); // 브라우저에 뜨는 메세지
 const handleProfile = (req,res) => res.send("You are on my profile");
 // 웹사이트처럼 작동하려면 re.send에 메시지가 아닌 html,css,JS 등 파일이 전송되야한다.
 
-// middleware CB 즉 middleware CB함수에만 next인자가 들어간다.
-const betweenHome = (req,res,next) => {
-  console.log("I'm between");
-  next(); // 다음 함수를 실행
-}
-
-// middlewares
-app.use(betweenHome) // 미들웨어를 전체 라우트에 사용
+// middlewares (순서대로 진행되기 떄문에 순서중요)
+app.use(cookieParser())
+app.use(bodyParser.json()) // json 받으면 이해하기
+app.use(bodyParser.urlencoded({extended : true}))
+app.use(helmet())
+app.use(morgan("dev"))
 
 // Routes
 app.get("/", handleHome);
