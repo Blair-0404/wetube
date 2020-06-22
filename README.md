@@ -53,12 +53,12 @@
     const PORT = 4000; // 열어줄 포트번호 지정
     
     function handleListening(){ // 콜백함수 생성
-      console.log(`Listening on : http://localhost:${PORT}/`)
+      console.log(`Listening on : http://localhost:${PORT}`)
     
     }
     
     app.listen(PORT, handleListening) 
-    // 실행되면 터미널에 Listening on : http://localhost:4000/ 찍힌다.
+    // 실행되면 터미널에 Listening on : http://localhost:4000 찍힌다.
 ```
 
 ## package.json 에 script 추가
