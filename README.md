@@ -63,6 +63,7 @@
 
 ## package.json 에 script 추가
 ```javascript
+// package.json
     "scripts": {
     "start": "node index.js"
       }
@@ -93,3 +94,55 @@
     
     app.get("/profile", handleProfile);
 ```
+
+## ES6 사용위해 BABEL 도입 -> npm install @babel/node  ->  npm install @babel/preset-env
+* ES6로 코딩하고싶지만 브라우저의 상황에 따라서 읽지 못할 수도있기때문에 바벨을 사용해서 안정화된 버전으로 낮춰주는 것 이다.
+* Babel node 사용 => nodeJS에서 Babel을 사용할거라서
+1. babel을 설치하고 .babelrc 파일생성 후 babel-preset-env plugin 설정해줌
+    * .babelrc : babel plugin들을 모아놓고 사용할 설정파일
+    
+    ```javascript
+   //.babelrc
+   
+   {
+     "presets": ["@babel/preset-env"]
+   }
+   ```
+2. index.js에서 erpress 를 ES6로 import 해보기 and 함수->arrow func
+3. package.json에서 "start": "babel-node index.js" 로 변경 후 테스트 
+    * 테스트 에러 -  npm install @babel/core 설치 후 다시 npm start 테스트
+    
+       ```javascript
+      // package.json
+      // start변경됨
+      
+        "scripts": {
+          "start": "babel-node index.js"
+        },
+      
+      ```
+    
+## nodemon package 설치  -> npm install nodemon -D
+* 변경사항이 있을때마다 서버를 껏다 켜야해서 불편함을 느꼈다.
+* nodemon이 있으면 변경사항이 바로 반영된다.
+* 하지만 프로젝트 실행에 필요한것이 아므로 dependencies에 겹치지 않게 해야함
+    * npm install nodemon -D (뒤에 -D를 부여해)
+       ```javascript
+      // package.json
+      // 새로운 entryPoint 생성됨.
+      
+        "devDependencies": {
+          "nodemon": "^2.0.4"
+        }
+      
+      ```
+    * start 변경해주기
+           ```javascript
+           // package.json
+          
+            "scripts": {
+              "start": "nodemon --exec babel-node index.js"
+            },
+          
+          ```
+* 이제 새로 저장할 떄마다 저절로 서버가 재실행된다.
