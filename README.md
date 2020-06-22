@@ -68,3 +68,28 @@
       }
 ```
 * 이제 서버를 열떄 node index.js가 아닌 npm start 로 열 수 있다.
+
+## GET api test
+* 콜백함수 만들고 app.get(라우트,CB) 테스트 해봄 => 서버 켜진 상태에서 라우트 들어가면 CB실행된다.
+* 웹사이트처럼 작동하려면 re.send에 메시지가 아닌 html,css,JS 등 파일이 전송되야한다.
+    * 본 프젝에서 도전해볼 것 이다.
+```javascript
+    // CB 생성
+    function handleHome(req, res) {
+      res.send("Hello from home") // 브라우저에 뜨는 메세지
+    
+    }
+    
+    function handleProfile(req,res) {
+      res.send("You are on my profile")
+      // 웹사이트처럼 작동하려면 re.send에 메시지가 아닌 html,css,JS 등 파일이 전송되야한다.
+
+    }
+
+    // app.get 테스트
+    app.get("/", handleHome);
+    // 첫 인자로 라우트지정, 두번쨰 인자로 해당라우트 접속시 실행될 CB
+    // 서버를 키고 브라우저에서 http://localhost:4000/로 접속하면 콜백함수가 실행된다.
+    
+    app.get("/profile", handleProfile);
+```
