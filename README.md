@@ -9,7 +9,7 @@
 
 ## npm init -> package 생성하기 
 * description, author만 typing 나머지는 enter => package.json파일이 생성된다.
-![npm init](images/init.png){width=40px height=40px){: .center}
+<img src="./images/init.png" width="700" height="700" />
 * 생성된 package.json에서 script일단 삭제
 
 
@@ -24,9 +24,8 @@
 ## git init
 
 ## github repository 생성 후 push
-<img src="./images/repo.png" width="100" height="100" />
+<img src="./images/repo.png" width="500" height="500" />
 
-![repo](./images/repo.png)
 * repo생성 후 터미널에서 git remote add origin https://github.com/Blair-0404/wetube.git
 * git add .    ->    git commit -m "first commit"    -> git push origin master
 
