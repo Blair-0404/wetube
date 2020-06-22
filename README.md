@@ -95,7 +95,8 @@
     app.get("/profile", handleProfile);
 ```
 
-## ES6 사용위해 BABEL 도입 -> npm install @babel/node  ->  npm install @babel/preset-env
+## ES6 사용위해 BABEL 도입
+### npm install @babel/node  ->  npm install @babel/preset-env
 * ES6로 코딩하고싶지만 브라우저의 상황에 따라서 읽지 못할 수도있기때문에 바벨을 사용해서 안정화된 버전으로 낮춰주는 것 이다.
 * Babel node 사용 => nodeJS에서 Babel을 사용할거라서
 1. babel을 설치하고 .babelrc 파일생성 후 babel-preset-env plugin 설정해줌
@@ -137,12 +138,25 @@
       
       ```
     * start 변경해주기
-           ```javascript
-           // package.json
+    
+      ```javascript
+      // package.json
           
-            "scripts": {
-              "start": "nodemon --exec babel-node index.js"
-            },
+       "scripts": {
+       "start": "nodemon --exec babel-node index.js"
+       },
           
-          ```
+       ```
 * 이제 새로 저장할 떄마다 저절로 서버가 재실행된다.
+
+## 트러블슈팅1.
+* 바벨이 변환을 완료할때까지 기다리는 시간이 부족해서 서버가 자동으로 실행되는게 2번씩 실행될때가 있었다.
+* 바벨의 변환시간을 2초정도 기다려 주기위해 package.json - scripts 변경
+
+      ```javascript
+      // package.json
+          
+       "scripts": {
+       "start": "nodemon --exec babel-node index.js --delay 2"
+       },
+          

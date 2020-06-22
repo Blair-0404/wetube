@@ -24,4 +24,3 @@ app.get("/", handleHome);
 // 서버를 키고 브라우저에서 http://localhost:4000/로 접속하면 콜백함수가 실행된다.
 
 app.get("/profile", handleProfile);
-//
