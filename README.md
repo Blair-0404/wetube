@@ -763,7 +763,8 @@ export default videoRouter
 
 #### Pug - Templates 에 Controller 정보 추가
 * 템플릿 전체에 or 한개에 추가가능
-* 템플릿 전체에 추가하는 방법
+#### Pug - Templates 에 Controller 정보 추가 - 템플릿 전체에 추가하는 방법(locals사용)
+* locals를 이용해템플릿 전체에 추가하는 방법
     * 미들웨어 생성 : routes.js의 local변수를 global변수로 사용하기 위해
         * middlewares.js 파일생성(미들웨어 함수는 모두 여기에)
     ````javascript
@@ -821,3 +822,39 @@ export default videoRouter
     ````
     <img src="./images/locals.png" />
 ..
+
+#### Pug - Templates 에 Controller 정보 추가 - 한 템플릿에만 추가하는 방법
+* Controller내부의 함수 자체에 인자를 설정하는 방법이 있다.
+    * res.render(연결할 템플릿.pug, 템플릿에 추가할 정보가 담긴 객체)
+    * 즉 원하는 변수를 controller에서 템플릿에 직접전달
+````javascript
+// controllers/videoController.js
+
+export const home = (req, res) => res.render("home", { pageTitle: "Home" }); // 첫인자 템플릿, 두번쨰인자 템플릿에 추가할 정보가 담긴객체
+// 즉 pageTitle이 "home" 으로 전달됨
+export const search = (req, res) => res.render("Search", { pageTitle: "Search" });
+
+export const videos = (req, res) => res.render("videos");
+export const upload = (req, res) => res.render("upload", { pageTitle: "Upload" });
+export const videoDetail = (req, res) => res.render("videoDetail", { pageTitle: "VideoDetail" });
+export const editVideo = (req, res) => res.render("editVideo", { pageTitle: "EditVideo" });
+export const deleteVideo = (req, res) => res.render("deleteVideo", { pageTitle: "DeleteVideo" });
+
+````
+
+````javascript
+// views/layouts/main.pug
+
+doctype html
+html
+    head
+        link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU", crossorigin="anonymous")
+        title #{pageTitle}  |  #{siteName}  
+             //  #{pageTitle} 추가해주면 controller에서 설정한 템플릿마다 객체의 값이 다르므로 결과가 다르다.
+    body
+        include ../partials/header
+        main
+            block content
+        include ../partials/footer
+
+````
