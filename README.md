@@ -702,7 +702,7 @@ export default videoRouter
  
 * 템플릿에서 레이아웃 확장시키기
     ````javascript
-    // views/home.pu
+    // views/home.pug
   
     extends layouts/main // 레이아웃 코드들을 템플릿에서 사용하고(복붙) + 추가적인 것도 더하겠다는 의미
     
@@ -716,4 +716,48 @@ export default videoRouter
     ````
   <img src="./images/pugHome.png" />
 
-#### Pug Partials 작업
+#### Pug Partials 작업(조직화)
+* 프로그래밍은 분할정복이다.(하나씩 나눠가면서 처리해야함)
+* views/partial 폴더 생성
+    * views/partial/footer.pug 생성
+    ````javascript
+    // views/partial/footer.pug
+  
+    footer.footer
+        .footer__icon
+            i.fab.fa-youtube
+        span.footer__text WeTube #{new Date().getFullYear()} &copy;
+  
+    ````
+  
+    * views/partial/header.pug 생성
+    ````javascript
+    // views/partial/header.pug
+  
+    header.header
+        .header__column
+            i.fab.fa-youtube
+        .header__column
+            ul
+                li
+                    a(href="#") Join 듯
+                    // routes.js에서 만든 URL과 연결할 예정
+                li
+                    a(href="#") Log In
+  
+    ````
+* partial 파일에 작업 후 layouts 파일 변경
+    ````javascript
+    // views/layouts/main.pug
+    
+    doctype html
+    html
+        head
+            title WeTube
+        body
+            include ../partials/header // 변경
+            main
+                block content // content 부분에 각 템플릿들(.pug파일들)에 들어간다.
+            include ../partials/footer // 변경
+    ````
+
