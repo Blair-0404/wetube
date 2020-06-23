@@ -761,3 +761,62 @@ export default videoRouter
             include ../partials/footer // 변경
     ````
 
+#### Pug - Templates 에 Controller 정보 추가
+* 템플릿 전체에 or 한개에 추가가능
+* 템플릿 전체에 추가하는 방법
+    * 미들웨어 생성 : routes.js의 local변수를 global변수로 사용하기 위해
+        * middlewares.js 파일생성(미들웨어 함수는 모두 여기에)
+    ````javascript
+    // middlewares.js  
+  
+    export const localsMiddleware = (req, res, next) => {
+      res.locals.siteName = 'WeTube';
+      res.locals.routes = routes;
+      next();
+    };
+  
+    ````
+  
+    ````javascript
+    // app.js
+  
+    import { localsMiddleware } from "./middlewares"
+    ...
+    // middleWares (순서대로 진행되기 떄문에 순서중요)
+    ...
+    // 미들웨어실행의 가장 마지막 순서에 넣기!
+    app.use(localsMiddleware); // pug - 템플릿에서 routes.js 접근하기
+    ````
+  
+    ````javascript
+    // views/layouts/main.pug
+    // test
+    
+    doctype html
+    html
+        head
+            link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU", crossorigin="anonymous")
+            title #{siteName} // 이부분!!!
+                              // locals에 있는건 템플릿에서 변수명처럼 존재한다.
+        body
+            include ../partials/header
+            main
+                block content
+            include ../partials/footer
+ 
+    ````
+    ````javascript
+    // views/partials/header.pug
+
+    header.header
+        .header__column
+            i.fab.fa-youtube
+        .header__column
+            ul
+                li
+                    a(href=routes.join) Join // 라우트파일의 변수명에 이제 접근가능
+                li
+                    a(href=routes.login) Log In // 이제 클릭하면 url 변경된다.
+    
+    ````
+    <img src="./images/locals.png" />
