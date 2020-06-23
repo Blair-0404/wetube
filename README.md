@@ -321,36 +321,77 @@
 
 
 ## Routing
-* init.js생성 후 index.js -> app.js파일변경 후 app.js에서 불필요한 코드 부분 삭제
-* app.js에 있는 Object를 init.js에 줘야한다.
+
 ### ES6 module 사용 : 다른 파일끼리 코드를 가져다 사용할 수 있다.
+* init.js생성 후 index.js -> app.js파일변경 후 app.js에서 불필요한 코드 부분 삭제
+* app.js에 있는 Object를 init.js에 주려한다.
 * ES6 module : 다른 파일끼리 코드를 가져다 사용할 수 있다.
     * app.js에서 express, helmet, morgan 등등의 모듈을 node_modules에서 가져와 사용했었다.
     * 이제 app.js를 init.js로 가져와 사용해보기 위해 app.js하단에 export 해주기
     ````javascript
-        // app.js
+     // app.js
     
-        export default app;
-        // 누군가가(=다른 파일이) app을 import하면 app Object를 주겠다는 의미.
-        // app Object ? app.js 에 코딩한 모두를 의미
+     export default app;
+     // 누군가가(=다른 파일이) app을 import하면 app Object를 주겠다는 의미.
+     // app Object ? app.js 에 코딩한 모두를 의미
     ````
     * init.js 에도 app.js를 import해주고 test해보기
     ````javascript
-         // init.js
+     // init.js
         
-         import app from "./app";
+     import app from "./app";
          
-         const PORT = 4000;
+     const PORT = 4000;
          
-         const handleListening = () => console.log(`Listening on : http://localhost:${PORT}`);
+     const handleListening = () => console.log(`Listening on : http://localhost:${PORT}`);
          
-         app.listen(PORT, handleListening) // app을 해왔고 app.js에서 이미 express로 서버를 생성해 놨기 때문에 .listen 사용가능
+     app.listen(PORT, handleListening) // app을 해왔고 app.js에서 이미 express로 서버를 생성해 놨기 때문에 .listen 사용가능
     ````
     * package.json - scripts nodemon init.js가 시작되게 변경
     ````javascript
-        // package.json
+     // package.json
   
       "scripts": {
         "start": "nodemon --exec babel-node init.js --delay 2"
       },
     ````
+### express - Router
+* router란 route들의 복잡함을 쪼개주는데 사용할 수 있다.
+* router.js 파일 생성
+    ````javascript
+    // router.js
+  
+    import express from "express"
+    
+    export const useRouter = express.Router(); // express의 Router사용!
+    // app.js에서 사용할 수 있게 변수 선언과 동시에 바로 export 해주기
+    
+    useRouter.get("/", (req, res) => res.send('user index'))
+    useRouter.get("/edit", (req, res) => res.send('user edit'))
+    useRouter.get("/password", (req, res) => res.send('user password'))
+   
+    ````
+* app.js에서 import해서 사용하기
+    ````javascript
+    // app.js
+  
+    import { useRouter } from "./router"; // export default 를 하지않았어서  { }로 import 함
+    
+    app.use("/user", useRouter)
+    // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+
+    ````
+* 실행 후 브라우저에서 /user 로 접속한 결과
+<img src="./images/user.png" />
+<img src="./images/user:edit.png" />
+<img src="./images/user:password.png" />
+
+
+## export const 변수명 VS export default 변수명
+* 위 두개의 차이점은 뭘까?
+    * export const 변수명
+        * 변수를 생성함과 동시에 바로 export를 해주는 것이다.
+        * 이러한 경우에는 import를 하는 쪽에서 import { 변수명 } from "경로" 즉 { } 로 import를 해줘야 한다.
+    * export default 변수명
+        * 위에서 변수를 생성하고 마지막 부분에 export default를 해주는 것 이다.
+        * 이러한 경우에는 import를 하는 쪽에서 import 변수명 from "경로" 로 import를 해줘야 한다.
