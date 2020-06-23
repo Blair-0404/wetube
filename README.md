@@ -39,7 +39,7 @@
 
  ***
  
-# < Server >
+# < Server Express>
 ## express 사용해서 서버생성 
 1. index.js에 express를 import
 2. 불러온 express를 실행해서 app 생성함
@@ -858,3 +858,24 @@ html
         include ../partials/footer
 
 ````
+
+### Search Controller
+* 검색창에 키워드 입력시 라우트 변경, 키워트담은 화면 새로 그려짐
+
+## [Pug Pages Plan]
+ - [ ] Home
+ - [x] Join
+ - [x] Login
+ - [x] Search
+ - [ ] User Detail
+ - [ ] Edit Profile
+ - [ ] Change Password
+ - [ ] Upload
+ - [ ] Video Detail
+ - [ ] Edit Video
+
+### Join / Log In Pug
+
+
+
+# < Server MongoDB >
