@@ -548,3 +548,51 @@ videoRouter.get(routes.deleteVideo, (req, res) => res.send("deleteVideo"));
 
 export default videoRouter
 ````
+
+### MVC 3 - Controller (= 콜백함수 분리하기)
+#### Controller먼저 한 후 뒤에 View->Model순으로 패턴 진행할 예정
+* Controller는 어떤 일이 어떻게 발생하는지에 관한 로직이다.
+* 대게 프로젝트에 있는 각 모델마다 컨트롤러 생성하는 편이다.
+* 본 프젝에서는 video와 video를 업로드할 user 등의 모델이 필요(routes.js에 있는것들)
+    * routers폴더에 있는 router파일들의 모든 콜백함수들을 Controller에 담을 것 이다.
+    1. controllers폴더 생성 후 videoController.js, userController.js 생성할 것이다.
+    2. test로 globalRouter.js에 있던 콜백함수들을 videoController.js, userController.js로 옮기고 import해보기
+    ````javascript
+    // controllers/videoController.js
+    
+    export const home = (req, res) => res.send("Home");
+    export const search = (req, res) => res.send("Search");
+  
+  
+    // controllers/videoController.js
+  
+    export const join = (req, res) => res.send("Join");
+    export const login = (req, res) => res.send("Login");
+    export const logout = (req, res) => res.send("Logout");
+  
+    ````
+  
+    ````javascript
+    // routers/globalRouter.js
+  
+    import express from "express"
+    import routes from "../routes";
+  
+    // controllers import
+    import { home, search } from "../controllers/videoController"
+    import { join, login, logout } from "../controllers/userController"
+
+    
+    const globalRouter = express.Router();
+    
+    globalRouter.get(routes.home, home);
+    globalRouter.get(routes.search, search);
+    globalRouter.get(routes.join, join);
+    globalRouter.get(routes.login, login);
+    globalRouter.get(routes.logout, logout);
+    
+    export default globalRouter
+    ````
+* 나중에는 콜백함수의 로직에서 데이터를 가져오거나 에러를 처리하는 등의 복잡한 로직을 구현해야할 수 있기때문에 controller를 따로 분리하는것은 좋다.
+
+   
