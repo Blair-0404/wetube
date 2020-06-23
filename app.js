@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import useRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import globalRouter from "./routers/globalRouter";
+import routes from "./routes";
 
 // Server 생성
 const app = express() ;// 불러온 express를 실행해서 app생성
@@ -23,11 +24,11 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // global Router
-app.use("/", globalRouter)
+app.use(routes.home, globalRouter)
 
 // detail Routers
-app.use("/user", useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
-app.use("/video", videoRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+app.use(routes.users, useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+app.use(routes.videos, videoRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
 
 export default app;
 

@@ -402,6 +402,8 @@
 * Model - data(DB - 뒤에서 다룰 예정)
 * View - data가 어떻게 생겼는지?
 * Controller - 데이터를 찾는 함수
+
+### MVC 1 - Routers 분리
 * 설치하는게 아니라 단지 패턴일 뿐이다. 본 프로젝트에 적용 도전!
     * 데이터의 모습에 맞춰서 url과 함수를 분리할 것 이다.
     * 라우터들을 기능에 따라서 분리 
@@ -431,7 +433,118 @@
            import videoRouter from "./routers/videoRouter";
            import globalRouter from "./routers/globalRouter";
         
-           app.use("/user", useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
-           app.use("/video", videoRouter); 
-           app.use("/video", globalRouter); 
+           app.use("/", globalRouter);
+           app.use("/users", useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+           app.use("/videos", videoRouter); 
+           
             ````
+
+### MVC 2 - URL 생성
+* router.js 파일 생성 후 모든 URL 생성
+````javascript
+// routes.js
+//여기에 URL들을 생성해서 어디에서든 이 URL을 불러다 쓸 예정(이유는 나중에,,)
+
+// Global
+const HOME = "/";
+const JOIN = "/join";
+const LOGIN = "/login";
+const LOGOUT = "/logout";
+const SEARCH = "/search";
+
+// Users
+const USERS = "/users";
+const USER_DETAIL = "/:id";
+const EDIT_PROFILE = "/edit-profile";
+const CHANGE_PASSWORD = "/change-password";
+
+// Videos
+const VIDEOS = "/videos";
+const UPLOAD = "/upload";
+const VIDEO_DETAIL = "/:id";
+const EDIT_VIDEO = "/:id/edit";
+const DELETE_VIDEO = "/:id/delete";
+
+
+const routes = {
+  home: HOME,
+  join: JOIN,
+  login: LOGIN,
+  logout: LOGOUT,
+  search: SEARCH,
+  users: USERS,
+  userDetail:USER_DETAIL,
+  editProfile:EDIT_PROFILE,
+  changePassword:CHANGE_PASSWORD,
+  videos:VIDEOS,
+  upload:UPLOAD,
+  videoDetail:VIDEO_DETAIL,
+  editVideo:EDIT_VIDEO,
+  deleteVideo:DELETE_VIDEO
+};
+
+export default routes;
+````
+* app.js에도 url을 직접 써줬던 부분을 변경해주기
+````javascript
+// app.js
+import routes from "./routes";
+
+// global Router
+app.use(routes.home, globalRouter)
+
+// detail Routers
+app.use(routes.users, useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+app.use(routes.videos, videoRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+
+````
+* routers/globalRouter.js와 routers/userRouter.js 와 routers/videoRouter.js 에서 필요한 URL들 받기
+````javascript
+// routers/globalRouter.js
+
+import express from "express"
+import routes from "../routes";
+
+const globalRouter = express.Router();
+
+globalRouter.get(routes.home, (req, res) => res.send("Home"));
+globalRouter.get(routes.join, (req, res) => res.send("Join"));
+globalRouter.get(routes.login, (req, res) => res.send("Login"));
+globalRouter.get(routes.logout, (req, res) => res.send("Logout"));
+globalRouter.get(routes.search, (req, res) => res.send("Search"));
+
+export default globalRouter
+
+
+// routers/userRouter.js
+
+import express from "express"
+import routes from "../routes";
+
+const useRouter = express.Router(); // express의 Router사용!
+
+useRouter.get(routes.users, (req, res) => res.send("users"));
+useRouter.get(routes.userDetail, (req, res) => res.send("userDetail"));
+useRouter.get(routes.editProfile, (req, res) => res.send("editProfile"));
+useRouter.get(routes.changePassword, (req, res) => res.send("changePassword"));
+
+
+export default useRouter
+
+
+// routers/videoRouter.js
+
+import express from "express"
+import routes from "../routes";
+
+const videoRouter = express.Router();
+
+
+videoRouter.get(routes.videos, (req, res) => res.send("videos"));
+videoRouter.get(routes.upload, (req, res) => res.send("upload"));
+videoRouter.get(routes.videoDetail, (req, res) => res.send("videoDetail"));
+videoRouter.get(routes.editVideo, (req, res) => res.send("editVideo"));
+videoRouter.get(routes.deleteVideo, (req, res) => res.send("deleteVideo"));
+
+export default videoRouter
+````
