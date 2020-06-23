@@ -644,3 +644,74 @@ export default videoRouter
 * 나중에는 콜백함수의 로직에서 데이터를 가져오거나 에러를 처리하는 등의 복잡한 로직을 구현해야할 수 있기때문에 controller를 따로 분리하는것은 좋다.
 
    
+### MVC 4 - View - Pug -> npm install Pug
+* Pug는  템플릿 언어로 express의 view engine이다. (express에서 view를 다루는 방식 중 하나)
+* pug는 HTML을 세련되게 보이게 할 수도 있다는게 장점이고 직접 템플릿을 작성하는 것 보다 프로그래밍을 더 빠르게 할 수 있다.
+* express로 HTML을 보여줄 수 있다. res.sent()대신 실제 HTML을 전달가능하고 CSS로 꾸밀수도 있다.
+#### pug 사용 test
+* npm install Pug 설치 후 공식문서 사용법참고
+    * app.set()으로 application 설정 하기 -> 본프젝에서는 view engine을 변경할 것이다(기본값은 undefined)
+    ````javascript
+    // app.js
+    app.set('view engine', "pug") // view engine을 변경할것이다. 확장자명을 pug로 설정
+
+    ````
+    * Pug와 express에는 view파일들의 위치에 관한 기본설정이 있는데 바꾸고싶다면 'views'설정을 바꾸면된다.
+        * application의 화면이 담긴 디렉토리나 디렉퇴의 배열 입력하면 된다.
+        * html파일을 저장해야 하는 폴더의 기본값은 => 프로젝트의 작업 디렉토리 + '/views' 이다.
+    * views 폴더 생 후 내부에 home.pug 확장자로 파일생성 
+    ````javascript
+    // views/home.pug 
+    // html처럼 변환해준다.
+  
+    p Hello PUGPUG
+
+    ````
+    
+    * 브라우저에서 home 라우트 접속시 pug파일의 내부가 보이기
+    ````javascript
+    // videoController.js
+    export const home = (req, res) => res.render("home"); // 확장자가 pug인 파일명을 render의 인자로
+
+    ...
+    ...
+    ... 
+    // 나머지 controller파일들도 send->render로 변경해줌
+    ````
+  <img src="./images/pug.png" />
+#### pug template 작업
+* pug의 문법은 <>를 사용 않고 들여쓰기를 한다.
+* views폴더에 layouts폴더 생성 후 내부에 main.pug 파일 생성해서 layout 코딩하기
+    * layout은 모든 템플릿파일에서 같은 코드를 반복해주지 않기 위해서 꼭 필요하다.
+    * layout에 공통적인 부분을 코딩하고 다른 파일마다는 필요한 내용들만 넣기
+    ````javascript
+    // views/layouts/main.pug
+    
+    doctype html
+    html
+        head
+            title WeTube
+        body
+            header
+                h1 @WeTube@
+            main
+                block content // content 부분에 각 템플릿들(.pug파일들)에 들어간다.
+            fotter
+                span &copy; WeTube
+    ````
+ 
+* 템플릿에서 레이아웃 확장시키기
+    ````javascript
+    // views/home.pu
+  
+    extends layouts/main // 레이아웃 코드들을 템플릿에서 사용하고(복붙) + 추가적인 것도 더하겠다는 의미
+    
+    block content
+        p Hello PUGPUG
+  
+    ...
+    ...
+    ...
+    // 나머지 템플릿파일들도 모두 생성해줌
+    ````
+  <img src="./images/pugHome.png" />

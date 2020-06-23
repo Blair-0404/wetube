@@ -17,6 +17,7 @@ const app = express() ;// 불러온 express를 실행해서 app생성
 // CB
 
 // middleWares (순서대로 진행되기 떄문에 순서중요)
+app.set('view engine', "pug")
 app.use(cookieParser());
 app.use(bodyParser.json()); // json 받으면 이해하기
 app.use(bodyParser.urlencoded({extended : true}));
