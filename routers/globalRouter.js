@@ -1,5 +1,6 @@
 import express from "express"
 import routes from "../routes";
+
 // controllers import
 import { home, search } from "../controllers/videoController"
 import { join, login, logout } from "../controllers/userController"

@@ -823,10 +823,12 @@ export default videoRouter
     <img src="./images/locals.png" />
 ..
 
-#### Pug - Templates 에 Controller 정보 추가 - 한 템플릿에만 추가하는 방법
-* Controller내부의 함수 자체에 인자를 설정하는 방법이 있다.
+#### Pug - Templates 에 Controller 정보 추가 - 템플릿마다 정보듣 다르게 추가하는 방법
+* Controller내부의 함수 자체에 인자를 설정함으로써 템플릿에 변수를 전달하는 방법이다.
     * res.render(연결할 템플릿.pug, 템플릿에 추가할 정보가 담긴 객체)
-    * 즉 원하는 변수를 controller에서 템플릿에 직접전달
+    * 즉 원하는 변수(객체)를 controller에서 템플릿에 직접전달
+    * 템플릿마다 보여줘야하는 결과가 다를경우 이 방법 유용( 본 프젝에서는 거의 이 방법으로 정보를 추가할 것이다,)
+   
 ````javascript
 // controllers/videoController.js
 
@@ -868,7 +870,9 @@ html
  - [x] Login -> [commit Log](https://github.com/Blair-0404/wetube/commit/73839fcb25032ce002e52f49c5b1128e80a97615)
  - [x] Search -> [commit Log](https://github.com/Blair-0404/wetube/commit/73839fcb25032ce002e52f49c5b1128e80a97615)
  - [ ] User Detail
- - [x] Edit Profile
-
+ - [x] Edit Profile -> [commit Log](https://github.com/Blair-0404/wetube/commit/ac727c3309649afdbd929ed747eeac7246de565d)
+ - [x] Change Password
+ - [x] Upload
+ - [x] Edit Video
 
 # < Server MongoDB >
