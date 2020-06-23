@@ -862,20 +862,13 @@ html
 ### Search Controller
 * 검색창에 키워드 입력시 라우트 변경, 키워트담은 화면 새로 그려짐
 
-## [Pug Pages Plan]
+#### [Pug Pages Plan]
  - [ ] Home
- - [x] Join
- - [x] Login
- - [x] Search
+ - [x] Join -> [commit Log](https://github.com/Blair-0404/wetube/commit/73839fcb25032ce002e52f49c5b1128e80a97615)
+ - [x] Login -> [commit Log](https://github.com/Blair-0404/wetube/commit/73839fcb25032ce002e52f49c5b1128e80a97615)
+ - [x] Search -> [commit Log](https://github.com/Blair-0404/wetube/commit/73839fcb25032ce002e52f49c5b1128e80a97615)
  - [ ] User Detail
- - [ ] Edit Profile
- - [ ] Change Password
- - [ ] Upload
- - [ ] Video Detail
- - [ ] Edit Video
-
-### Join / Log In Pug
-
+ - [x] Edit Profile
 
 
 # < Server MongoDB >
