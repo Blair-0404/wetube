@@ -46,7 +46,7 @@
 3. 4000으로 Port번호 지정하고 app.listen 테스트
     * app이 4000포트를 listen하면 콜백함수 실행
 ```javascript
-    // index.js
+    // app.js
 
     const express = require('express') // express를 import
     // 즉 나의 폴더 어딘가에서 express를 찾는다. 없다면 node_modules에서 찾아서 불러온다.
@@ -67,7 +67,7 @@
 ```javascript
 // package.json
     "scripts": {
-    "start": "node index.js"
+    "start": "node app.js"
       }
 ```
 * 이제 서버를 열떄 node index.js가 아닌 npm start 로 열 수 있다.
@@ -77,7 +77,7 @@
 * 웹사이트처럼 작동하려면 re.send에 메시지가 아닌 html,css,JS 등 파일이 전송되야한다.
     * 본 프젝에서 도전해볼 것 이다.
 ```javascript
-    // index.js
+    // app.js
 
     // CB 생성
     function handleHome(req, res) {
@@ -114,7 +114,7 @@
    }
    ```
 2. index.js에서 erpress 를 ES6로 import 해보기 and 함수->arrow func
-3. package.json에서 "start": "babel-node index.js" 로 변경 후 테스트 
+3. package.json에서 "start": "babel-node app.js" 로 변경 후 테스트 
     * 테스트 에러 -  npm install @babel/core 설치 후 다시 npm start 테스트
     
        ```javascript
@@ -122,7 +122,7 @@
       // start변경됨
       
         "scripts": {
-          "start": "babel-node index.js"
+          "start": "babel-node app.js"
         },
       
       ```
@@ -147,7 +147,7 @@
       // package.json
           
        "scripts": {
-       "start": "nodemon --exec babel-node index.js"
+       "start": "nodemon --exec babel-node app.js"
        },
           
        ```
@@ -161,7 +161,7 @@
   // package.json
           
     "scripts": {
-    "start": "nodemon --exec babel-node index.js --delay 2"
+    "start": "nodemon --exec babel-node app.js --delay 2"
     },
    ```
   
@@ -174,7 +174,7 @@
     * test (유저의 home "/"요청과 handleHome 사이에 미들웨어 추가)
     
     ````javascript
-  // index.js
+  // app.js
   
   
   // CB
@@ -192,7 +192,7 @@
         * 즉 요청을 계속 처리할 권한을 줘야한다.
         
             ````javascript
-          // index.js
+          // app.js
           // next라는 key이용해서 다음 실행권한주기
           
          
@@ -214,7 +214,7 @@
         * 전체적으로 사용하려면? (코드의 순서가 굉장히 중요하다)
         
         ````javascript
-          // index.js
+          // app.js
       
           // middlewares 위치중요
           app.use(betweenHome) // 미들웨어를 전체 라우트에 사용
@@ -230,13 +230,13 @@
 * Morgan ? logging에 도움을 준다. 
 * logging이란? 무슨일이 어디서 일어났는지 기록하는 것 이다.
 * morgan은 몇가지 로깅옵션들이 있다.
-* 설치 후 index.js 에 import morgan from "morgan"; 해주기 
+* 설치 후 app.js 에 import morgan from "morgan"; 해주기 
 
 #### morgan - tiny옵션 사용해보기
 * 아래처럼 app.use 코딩해준 후 
 ````javascript
 
-    // index.js
+    // app.js
     
     // middlewares
     app.use(morgan("tiny"))
@@ -253,7 +253,7 @@
 * 아래처럼 app.use 코딩해준 후 
 ````javascript
 
-    // index.js
+    // app.js
     
     // middlewares
     app.use(morgan("combined"))
@@ -267,7 +267,7 @@
 
 ### middleware - helmet 설치 후 사용해보기  ->  npm install helmet
 * 보안관련 미들웨어 
-* 설치 후 index.js 에 import helmet from "morgan"; 해주기 
+* 설치 후 app.js 에 import helmet from "morgan"; 해주기 
 * index.js에서 미들웨어 위치에 app.use(helmet())추가
 
 ### middleware - body-parser 설치 후 사용해보기  ->  npm install body-parser
@@ -279,10 +279,10 @@
     * bodyParser.json
     * bodyParser.text
     * bodyParser.urlencoded
-* 설치 후 index.js 에 import bodyParser from "body-parser"; 해주기 
+* 설치 후 app.js 에 import bodyParser from "body-parser"; 해주기 
 
     ````javascript
-      // index.js
+      // app.js
   
       // middlewares
   
@@ -294,14 +294,14 @@
 ### middleware - cookie-parser 설치 후 사용해보기  ->  npm install cookie-parser
 * cookie를 다루는데 도와준다. 유저로부터 받은 cookie를 이해하는 방법
 * session을 다루기 위해서 cookie에 유저정보를 저장한다.
-* 설치 후 index.js 에 import cookieParser from "cookie-parser"; 해주기 
+* 설치 후 app.js 에 import cookieParser from "cookie-parser"; 해주기 
 
 
 ### middleware 가 연결을 끊게할 수도 있다.
 * 원한다면 미들웨어로 연결을 끊을 수 있다.
 * 미들웨어가 res.sent를 실행하는 함수를 발동하면 (next()가 있어도) 연결이 끊긴다.
 ````javascript
-    // index.js
+    // app.js
     
     // CB
     const handleHome = (req, res) => res.send("Hello from home"); // 브라우저에 뜨는 메세지
