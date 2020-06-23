@@ -318,3 +318,39 @@
 ````
 * 즉 위 코드에서 handleHome 는 실행이 안된다.
 <img src="./images/combined.png" />
+
+
+## Routing
+* init.js생성 후 index.js -> app.js파일변경 후 app.js에서 불필요한 코드 부분 삭제
+* app.js에 있는 Object를 init.js에 줘야한다.
+### ES6 module 사용 : 다른 파일끼리 코드를 가져다 사용할 수 있다.
+* ES6 module : 다른 파일끼리 코드를 가져다 사용할 수 있다.
+    * app.js에서 express, helmet, morgan 등등의 모듈을 node_modules에서 가져와 사용했었다.
+    * 이제 app.js를 init.js로 가져와 사용해보기 위해 app.js하단에 export 해주기
+    ````javascript
+        // app.js
+    
+        export default app;
+        // 누군가가(=다른 파일이) app을 import하면 app Object를 주겠다는 의미.
+        // app Object ? app.js 에 코딩한 모두를 의미
+    ````
+    * init.js 에도 app.js를 import해주고 test해보기
+    ````javascript
+         // init.js
+        
+         import app from "./app";
+         
+         const PORT = 4000;
+         
+         const handleListening = () => console.log(`Listening on : http://localhost:${PORT}`);
+         
+         app.listen(PORT, handleListening) // app을 해왔고 app.js에서 이미 express로 서버를 생성해 놨기 때문에 .listen 사용가능
+    ````
+    * package.json - scripts nodemon init.js가 시작되게 변경
+    ````javascript
+        // package.json
+  
+      "scripts": {
+        "start": "nodemon --exec babel-node init.js --delay 2"
+      },
+    ````
