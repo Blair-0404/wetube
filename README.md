@@ -494,8 +494,8 @@ import routes from "./routes";
 app.use(routes.home, globalRouter)
 
 // detail Routers
-app.use(routes.users, useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
-app.use(routes.videos, videoRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+app.use(routes.users, useRouter);
+app.use(routes.videos, videoRouter);
 
 ````
 * routers/globalRouter.js와 routers/userRouter.js 와 routers/videoRouter.js 에서 필요한 URL들 받기
