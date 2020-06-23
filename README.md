@@ -562,14 +562,62 @@ export default videoRouter
     
     export const home = (req, res) => res.send("Home");
     export const search = (req, res) => res.send("Search");
+    
+    export const videos = (req, res) => res.send("videos");
+    export const upload = (req, res) => res.send("upload");
+    export const videoDetail = (req, res) => res.send("videoDetail");
+    export const editVideo = (req, res) => res.send("editVideo");
+    export const deleteVideo = (req, res) => res.send("deleteVideo");
   
   
-    // controllers/videoController.js
+    // routers/videoRouters.js
+  
+    import express from "express"
+    import routes from "../routes";
+    import { videos, upload, videoDetail, editVideo, deleteVideo } from "../controllers/videoController"
+    
+    const videoRouter = express.Router();
+    
+    videoRouter.get(routes.videos, videos);
+    videoRouter.get(routes.upload, upload);
+    videoRouter.get(routes.videoDetail, videoDetail);
+    videoRouter.get(routes.editVideo, editVideo);
+    videoRouter.get(routes.deleteVideo, deleteVideo);
+    
+    export default videoRouter
+    
+    ````
+  
+    ````javascript
+    // controllers/useController.js
   
     export const join = (req, res) => res.send("Join");
     export const login = (req, res) => res.send("Login");
     export const logout = (req, res) => res.send("Logout");
   
+    export const users = (req, res) => res.send("users");
+    export const userDetail = (req, res) => res.send("userDetail");
+    export const editProfile = (req, res) => res.send("editProfile");
+    export const changePassword = (req, res) => res.send("changePassword");
+  
+    // routers/useRouters.js
+  
+    import express from "express"
+    import routes from "../routes";
+    import { users, userDetail, editProfile, changePassword } from "../controllers/userController"
+    
+    
+    const useRouter = express.Router(); // express의 Router사용!
+    // app.js에서 사용할 수 있게 변수 선언과 동시에 바로 export 해주기
+    
+    
+    useRouter.get(routes.users, users);
+    useRouter.get(routes.userDetail, userDetail);
+    useRouter.get(routes.editProfile, editProfile);
+    useRouter.get(routes.changePassword, changePassword);
+    
+    
+    export default useRouter
     ````
   
     ````javascript
