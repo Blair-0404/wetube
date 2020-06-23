@@ -355,11 +355,11 @@
         "start": "nodemon --exec babel-node init.js --delay 2"
       },
     ````
-### express - Router
+### express - Router 사용
 * router란 route들의 복잡함을 쪼개주는데 사용할 수 있다.
-* router.js 파일 생성
+* userRouter.js 파일 생성
     ````javascript
-    // router.js
+    // userRouter.js
   
     import express from "express"
     
@@ -375,7 +375,7 @@
     ````javascript
     // app.js
   
-    import { useRouter } from "./router"; // export default 를 하지않았어서  { }로 import 함
+    import { useRouter } from "./userRouter"; // export default 를 하지않았어서  { }로 import 함
     
     app.use("/user", useRouter)
     // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
@@ -387,11 +387,51 @@
 <img src="./images/user:password.png" />
 
 
-## export const 변수명 VS export default 변수명
+### export const 변수명 VS export default 변수명
 * 위 두개의 차이점은 뭘까?
-    * export const 변수명
-        * 변수를 생성함과 동시에 바로 export를 해주는 것이다.
+    * export const 변수명 (= 해당 변수만 export)
+        * 변수를 생성함과 동시에 바로 export를 해주는 방식
         * 이러한 경우에는 import를 하는 쪽에서 import { 변수명 } from "경로" 즉 { } 로 import를 해줘야 한다.
-    * export default 변수명
-        * 위에서 변수를 생성하고 마지막 부분에 export default를 해주는 것 이다.
+        * 해당 변수만 export하기 떄문에 export하는 파일쪽에 다른 변수들이있다면 그것은 export 되지 않는다.
+    * export default 변수명 (= 파일 전체를 export)
+        * 위에서 변수를 생성하고 마지막 부분에 export default를 해주는 방식
         * 이러한 경우에는 import를 하는 쪽에서 import 변수명 from "경로" 로 import를 해줘야 한다.
+        * 전체를 export하기 떄문에 파일 내의 어떤 것도 import 받은 쪽에서 사용가능
+
+## MVC(= Model View Control) Pattern
+* Model - data(DB - 뒤에서 다룰 예정)
+* View - data가 어떻게 생겼는지?
+* Controller - 데이터를 찾는 함수
+* 설치하는게 아니라 단지 패턴일 뿐이다. 본 프로젝트에 적용 도전!
+    * 데이터의 모습에 맞춰서 url과 함수를 분리할 것 이다.
+    * 라우터들을 기능에 따라서 분리 
+        1. app.js 에서 삭제가 필요한 부분 삭헤하고 router.js -> useRouter.js 파일명 변경
+        2. videoRouter.js, globalRouter.js 파일 새로 생성
+        3. routers directory생성 후 useRouter.js, videoRouter.js, globalRouter.js 담기
+        4. app.js에서 생성된 router들 import
+            ````javascript
+           // routers/videoRouter.js
+           import express from "express"
+           
+           const videoRouter = express.Router();
+           
+           export default videoRouter
+           
+           // routers/globalRouter.js
+           import express from "express"
+           
+           const globalRouter = express.Router();
+           
+           export default globalRouter   
+            ````
+           
+            ````javascript
+           // app.js
+           import useRouter from "./routers/userRouter";
+           import videoRouter from "./routers/videoRouter";
+           import globalRouter from "./routers/globalRouter";
+        
+           app.use("/user", useRouter); // app.use => 누군가가 /user 경로에 접근하면 useRouter의 라우터전체를 사용하겠다는 의미이다.
+           app.use("/video", videoRouter); 
+           app.use("/video", globalRouter); 
+            ````
