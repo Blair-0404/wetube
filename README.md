@@ -648,7 +648,7 @@ export default videoRouter
 * Pug는  템플릿 언어로 express의 view engine이다. (express에서 view를 다루는 방식 중 하나)
 * pug는 HTML을 세련되게 보이게 할 수도 있다는게 장점이고 직접 템플릿을 작성하는 것 보다 프로그래밍을 더 빠르게 할 수 있다.
 * express로 HTML을 보여줄 수 있다. res.sent()대신 실제 HTML을 전달가능하고 CSS로 꾸밀수도 있다.
-#### pug 사용 test
+#### Pug 사용 test
 * npm install Pug 설치 후 공식문서 사용법참고
     * app.set()으로 application 설정 하기 -> 본프젝에서는 view engine을 변경할 것이다(기본값은 undefined)
     ````javascript
@@ -679,7 +679,7 @@ export default videoRouter
     // 나머지 controller파일들도 send->render로 변경해줌
     ````
   <img src="./images/pug.png" />
-#### pug template 작업
+#### Pug Layouts 작업
 * pug의 문법은 <>를 사용 않고 들여쓰기를 한다.
 * views폴더에 layouts폴더 생성 후 내부에 main.pug 파일 생성해서 layout 코딩하기
     * layout은 모든 템플릿파일에서 같은 코드를 반복해주지 않기 위해서 꼭 필요하다.
@@ -715,3 +715,5 @@ export default videoRouter
     // 나머지 템플릿파일들도 모두 생성해줌
     ````
   <img src="./images/pugHome.png" />
+
+#### Pug Partials 작업
