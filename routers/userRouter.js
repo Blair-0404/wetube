@@ -9,7 +9,7 @@ const useRouter = express.Router(); // express의 Router사용!
 
 useRouter.get(routes.editProfile, editProfile);
 useRouter.get(routes.changePassword, changePassword);
-useRouter.get(routes.userDetail, userDetail);
+useRouter.get(routes.userDetail(), userDetail);
 
 
 export default useRouter
