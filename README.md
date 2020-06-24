@@ -874,5 +874,6 @@ html
  - [x] Change Password
  - [x] Upload
  - [x] Edit Video
-
+* 필요한곳에서 html을 재사용하기 위해 mixins 방법사용
+    * mixins : 웹사이트에서 자주 반복되는 html코드를 담고있다. / pug의 함수의 하나이다
 # < Server MongoDB >
