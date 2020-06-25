@@ -954,3 +954,55 @@ dotenv.config() // dotenv.config함수로 .env파일 안에 있는 정보 불러
 
 const PORT = process.env.PORT || 4000; // 만일 key 못찾음 4000으로 !
 ````
+
+## MongoDB 사용
+* mongoDB 의 장점은 document를 줄여준다는 장점이있다.
+* 하지만 MongoDB에 내 파일들이 어떤 식으로 생겨야 할지 알려줘야 한다.즉 아주거나 생성할 수는 없다는 의미이다.(타당성이 필요함)
+* ex)  "MongoDB야 내 파일들을 video라는 이름을 가질거고 모든 video들은 stringType을 가질거고 그 string의 이름은 title이야"
+    * "video는 view를 가질거고 view는 number type일거야 "
+* 이런식으로 모델의 스키마를 생성해야 한다.
+
+### Video model 생성하기(스키마생성 후 생성된 스키마로 모델만들어주기)
+* models폴더 생성 후 그 안에 Video.js생성
+    * models/Video.js 에 ViewoSchema생성 
+        * 비디오는 Database에 저장하는것이 아닌 (Amazon)서버에 비디오를 저장할 것 이다.
+            * 떄문에 스키마의 fileUrl에는 주소만 넣을 것이다.
+        * [mongoose의 다양항 schema형식들 참고](https://mongoosejs.com/docs/guide.html)
+       
+````javascript
+// models/Video.js
+import mongoose from "mongoose"; // 스키마 생성위해 mongoose import 
+
+// schema 생성하기
+const VideoSchema = new mongoose.Schema({
+  fileUrl: { // 주소를 넣을뿐 비디오 자체를 넣는것은 아니다.(너무무거워지기 떄문에) 비디오 자체는 서버(amazon)에 넣을 것 이다.
+    type: String,
+    required: "File URL is required" // error 메세지
+  },
+  title: {
+    type: String,
+    required: "Title is required"
+  },
+  description: String,
+  views: {
+    type: Number,
+    default: 0
+  },
+  createAt: {
+    type: Date ,
+    default: Date.now
+  }
+});
+
+
+// 모델생성 (위에서 만든 schema로 model 생성하기!)
+const model = mongoose.model("Video", VideoSchema);  // 모델의 이름은 "Video" 이고, Video model의 schema는 VideoSchema 이다.
+
+export default model;
+````
+
+* 아직 Database는 인지못하고있다. 즉 생성한 모델을 Database가 인식하게 해주기위해서 init.js에 import 해주기
+````javascript
+// init.js
+import "./models/Video"
+````
