@@ -920,7 +920,7 @@ db.on("error", handleError)
 // init.js
 import "./db"
 ````
-    <img src="./images/mongoDB.png" />
+<img src="./images/mongoDB.png" />
     
 ## dotenv 구성
 * 숨기고 싶은 것을을 key로 숨겨서 다른곳에서 보이지 않게 하기
