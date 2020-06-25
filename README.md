@@ -921,3 +921,34 @@ db.on("error", handleError)
 import "./db"
 ````
     <img src="./images/mongoDB.png" />
+    
+## dotenv 구성
+* 숨기고 싶은 것을을 key로 숨겨서 다른곳에서 보이지 않게 하기
+1. .env 파일생성 후 mongodb주소와 port번호 넣기
+2. db.js에 직접 넣었던 mongodb주소를 지우고 dotenv를 import해서 주소변수 넣기 and init.js에도 직접넣었던 port번호 지우고 dotenv를 import해서 PORT변수 넣기
+3. .gitignore 에 .env파일 추가 
+````javascript
+// .env
+MONGO_URL="mongodb://localhost:27017/we-tube"
+
+PORT=4000
+
+// db.js
+import dotenv from "dotenv";
+
+dotenv.config() // dotenv.config함수로 .env파일 안에 있는 정보 불러오기
+
+mongoose.connect(process.env.MONGO_URL, // 찾은 모든 변수들을 proccess.env.key에 저장하기
+  {
+    useNewUrlParser: true, useFindAndModify: false
+  }
+);
+
+// init.js
+import dotenv from "dotenv";
+
+dotenv.config() // dotenv.config함수로 .env파일 안에 있는 정보 불러오기
+// 찾은 모든 변수들을 proccess.env.key에 저장하기
+
+const PORT = process.env.PORT || 4000; // 만일 key 못찾음 4000으로 !
+````
