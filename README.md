@@ -1060,3 +1060,32 @@ const VideoSchema = new mongoose.Schema({
 // init.js
 import "./models/Comment" // 이렇게 해줘야 Database가 작동한다.
 ````
+
+### 생성한 model들 사용하려면?
+* 현재상태로 브라우저에서 접속하 ReferenceError: videos is not defined 등의 에러가 뜰 것이다.
+    * model만 생성했을 뿐 그것을 Database로서 뿌리지는 않았기 때문이.
+* controllers/videoController.js 에서 만들어진 videio모델을 import한 후 데이터 받아오는 부분을 비동기 처리로 해줘야 한다ㅣ.!
+````javascript
+// controllers/videoController.js
+import Video from "../models/Video"; // 이건 Database의 element가 아니라 단지 model일 뿐 아예 다른 것 이다.
+// element를 받는 통로일 뿐이지 element자체는 아니다. // 아래 비동기 처리를 하면서 Database의 요소들을 부를 예정
+
+
+export const home = async (req, res) => { // 비동기를 해주지 않으면 없는 video를 찾게된다.
+  try{
+    const videos = await Video.find({}); // Video.find({})로 Database에 있는 모든 Video를 가져오는 것을 기다려달라 해야한다.
+    // throw Error("에러!"); // 에러가 나도 catch로 처리를 해줬기 때문에 home화면이 잘 그려질 것이다. // 하지만 try,catch가 아닌 상태에서 에러나면 Nodejs가 뻗어서 브라우저도 연결이 끊긴다.
+    res.render("home", { pageTitle: "Home", videos }); // res.render(첫인자 템플릿, 두번쨰인자 템플릿에 추가할 정보가 담긴객체)
+  } catch (error) { // 에러처리를 하지않으면 Video.find({})가 실패하더라도 res.render가 진행되서 꼬이기 때문에 에러처리 해줘야한다.
+    console.log(error);
+    res.render("home", { pageTitle: "Home", videos: [] }); // 에러난경우(db에서 videos가져오기 실패한경우)에는 그냥 default로 빈 배열을 담기
+  }
+};
+...
+...
+...
+````
+
+### Upload 기능 구현하기
+#### 어떻게 user가 videiofile을 선택해서 upload하고 해당 file url을 얻고 그 url로 video 생성할지?
+* file 업로드-> middleware에서 받고 upload하기 -> url복사해서 Database에 저장하기
