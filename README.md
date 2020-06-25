@@ -1170,7 +1170,7 @@ export const postUpload = async (req, res) => {
 ...
 ````
 * 브라우저 해서 업로드 해본 결과는?!?!? 두구두구
-<img src="./images/newVideo.png" width="400"/>
+<img src="./images/newVideo.png" width="600"/>
 * home에 가면 이렇게 내가 업로드 한 비디오가 생겨있다.!
 <img src="./images/result.png" width="400"/>
 
