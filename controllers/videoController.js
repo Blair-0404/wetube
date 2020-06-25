@@ -23,12 +23,19 @@ export const search = (req, res) => {
 };
 
 export const getUpload = (req, res) => res.render("upload", { pageTitle: "Upload" });
-export const postUpload = (req, res) => {
+export const postUpload = async (req, res) => {
   const {
-    body: { file, title, description }
+    body: { title, description },
+    file : {path} // multer 가 업도르한 파일을 받아서 file이란 객체를 준다. 그 안에 path가 있다.
   } = req;
-  // To Do: Upload and save video
-  res.redirect(routes.videoDetail(324393))
+  const newVideo = await Video.create({ // 생성했던 video model의 스키마 폼에 맞춰 real video element만들기!
+    fileUrl: path,
+    title,
+    description
+  });
+  console.log(newVideo) // test!
+  console.log(newVideo.id) // test!
+  res.redirect(routes.videoDetail(newVideo.id)) // 위에서 비동기처리로 비디오 요소가 만들어진 후이기 때문에 id를 잘 뽑아낼 수 있다.
 };
 
 export const videoDetail = (req, res) => res.render("videoDetail", { pageTitle: "VideoDetail" });

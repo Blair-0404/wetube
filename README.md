@@ -1086,6 +1086,91 @@ export const home = async (req, res) => { // 비동기를 해주지 않으면 �
 ...
 ````
 
-### Upload 기능 구현하기
-#### 어떻게 user가 videiofile을 선택해서 upload하고 해당 file url을 얻고 그 url로 video 생성할지?
-* file 업로드-> middleware에서 받고 upload하기 -> url복사해서 Database에 저장하기
+### Upload 기능 1. 비디오아닌 파일은 들어오지 않게하기
+* upload.pug에서 처리함
+````javascript
+// views/upload.pug
+...
+...
+            input(type="file", id="file", name="videoFile", required=true, accept="video/*") // accept="video/*"로 비디오만 받게 처리함 
+                                                                                        // 애초에 비디오가 아닌 파일들을 선택할수가없다.
+...
+...
+````
+
+### Upload 기능 2. DB에 업로드한 파일의 location(url)을 저장하기 
+* 중요한건 파일 자체를 저장하지않고 파일의 location!!을 저장하려는 것 이다.
+* 어떻게 user가 videiofile을 선택해서 upload하고 해당 file url을 얻고 그 url로 video 생성 해야할까????
+    * file을 upload하고 URL을 반환하는 middleware를 사용해보자!!!
+        * file 업로드-> middleware에서 받고 upload하기 -> url복사해서 Database에 저장하기
+####  middleware multer 사용  ->  npm install multer
+* [npm 문서](https://www.npmjs.com/package/multer)
+* upload form의 enctype에 multipart/form-data를 추가해줘야 한다.
+    * file을 보 내는거라서 form의 encoding이 달라야 하기 때문이다.
+````javascript
+// views/upload.pug
+...
+...
+    .form-container
+        form(action=`/videos${routes.upload}`, method="post", enctype="multipart/form-data")
+            label(for="file") Video File
+...
+...
+````
+* middleware.js에서 // 설치한 multer로 middleware 생성하기
+````javascript
+// middleware.js
+import multer from "multer";
+...
+// 설치한 multer로 middleware 만들어보기
+const multerVideo = multer({ dest: "videos" });
+...
+export const uploadVideo = multerVideo.single('videoFile'); // single 오직한 파일만 ("들어올 파일이 이름")
+````
+* 생성된 미들웨어를 사용하기!
+    * routers/videoRouter.js에서 upload를 post요청하는 부분에 미들웨어 추가해주기
+````javascript
+// routers/videoRouter.js
+import {uploadVideo} from "../middlewares";
+...
+const videoRouter = express.Router();
+...
+videoRouter.get(routes.upload, getUpload);
+videoRouter.post(routes.upload, uploadVideo, postUpload); // 이부분에 uploadVideo 미들웨어 추가해주기
+// mluter middleware를 통해서 업로드한 파일의 url을 알아내는 기능을 구현
+````
+* 이제 브라우저에서 업로드를 테스트 해보면 multer가 프로젝트에 videos폴더생성하고 그 안에 파일을 생성한다.
+<img src="./images/multer.png"/>
+* 또 multer가 file이란 객체도 주는데 poasUpload메소드에서 console.log로 확인해보니 이미지와 같다.
+<img src="./images/multerFile.png"/>
+* path가 우리가 원하는 파일의 주소임!
+
+* 이제 multer의 기능을 이용해서 videoControllers.js에서 postUpload함수에서 비동기 처리를 구현해서 video 요소 생성해보기!!
+````javascript
+// controllers/videoControllers.js
+
+import Video from "../models/Video"; // 이건 Database의 element가 아니라 단지 model일 뿐 아예 다른 것 이다.
+// element를 받는 통로일 뿐이지 element자체는 아니다.
+...
+export const postUpload = async (req, res) => {
+  const {
+    body: { title, description },
+    file : {path} // multer 가 업도르한 파일을 받아서 file이란 객체를 준다. 그 안에 path가 있다.
+  } = req;
+  const newVideo = await Video.create({ // 생성했던 video model의 스키마 폼에 맞춰 real video element만들기!
+    fileUrl: path,
+    title,
+    description
+  });
+  console.log(newVideo) // test!
+  console.log(newVideo.id) // test!
+  res.redirect(routes.videoDetail(newVideo.id))  // 위에서 비동기처리로 비디오 요소가 만들어진 후이기 때문에 id를 잘 뽑아낼 수 있다.
+};
+...
+...
+````
+* 브라우저 해서 업로드 해본 결과는?!?!? 두구두구
+<img src="./images/newVidep.png"/>
+* home에 가면 이렇게 내가 업로드 한 비디오가 생겨있다.!
+<img src="./images/result.png"/>
+
