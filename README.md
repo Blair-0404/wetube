@@ -876,4 +876,48 @@ html
  - [x] Edit Video
 * 필요한곳에서 html을 재사용하기 위해 mixins 방법사용
     * mixins : 웹사이트에서 자주 반복되는 html코드를 담고있다. / pug의 함수의 하나이다
+    
+    
+    
 # < Server MongoDB >
+* MongoDB 는  NoSQL이다. 사용이 수월하고 직관적이다.
+* MongoDB Community Server다운로드 
+## mongoDB설치
+[설치가이드](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+1. brew tap mongodb/brew
+2. brew install mongodb-community@4.2
+* brew services start mongodb-community@4.2 (스타트)
+* brew services stop mongodb-community@4.2  (스탑)
+* ps aux | grep -v grep | grep mongod (실행중인몽고디비 확인)
+3. mongo (실행해서포트확인)
+    <img src="./images/mongo.png" />
+### 추가적으로 npm install mongoose, npm install dotenv 도 설치
+* dotenv는 숨기고싶은 부분을 숨길 수 있는 기능이다.
+
+## 설치한것들로 db.js 다시 코딩 후 mongoDB 테스트
+````javascript
+// db.js
+
+import mongoose from "mongoose";
+
+mongoose.connect("mongodb://localhost:27017/we-tube", {
+  useNewUrlParser: true, useFindAndModify: false
+}); // 어디에 DB가 저장되어있는지 알려줘야한다. so DB의 URL이 들어가야함
+
+const db = mongoose.connection;// MongoDB와의 연결을 'db'로 저장
+
+const handleOpen = () => console.log("Connected to DB !!")
+const handleError = (error) => console.log(`Error on DB Connection!! ${error}`)
+
+db.once("open", handleOpen)// connetion을 열고 성공여부를 확인할 수 있는 함수 넣기
+// once는 한번실행
+db.on("error", handleError)
+
+````
+* videoController.js에 db.js를 import하던 부분을 지우고 init.js에서 import시켜주기
+````javascript
+
+// init.js
+import "./db"
+````
+    <img src="./images/mongoDB.png" />

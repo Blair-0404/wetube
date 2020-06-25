@@ -1,3 +1,4 @@
+import "./db"
 import app from "./app"; // app.js 에서 application import
 
 const PORT = 4000;
