@@ -246,7 +246,7 @@
     app.get("/profile", hndleProfile);
 ````
 * npm start -> 브라우저에 http://localhost:4000/ or /profile 경로로 이동해주면 아래처럼 로깅정보가 찍힌다.
-<img src="./images/tiny.png" />
+<img src="./images/tiny.png" width="500"/>
 
 #### morgan - combined옵션 사용해보기
 * 어쩐종류 접속인지, 어떤 브라우저인지 등의 정보 표시
@@ -382,9 +382,9 @@
 
     ````
 * 실행 후 브라우저에서 /user 로 접속한 결과
-<img src="./images/user.png" width="300" />
-<img src="./images/user:edit.png" />
-<img src="./images/user:password.png" />
+<img src="./images/user.png" width="400" />
+<img src="./images/user:edit.png" width="400"/>
+<img src="./images/user:password.png" width="400"/>
 
 
 ### export const 변수명 VS export default 변수명
@@ -678,7 +678,7 @@ export default videoRouter
     ... 
     // 나머지 controller파일들도 send->render로 변경해줌
     ````
-  <img src="./images/pug.png" />
+  <img src="./images/pug.png" width="400"/>
 #### Pug Layouts 작업
 * pug의 문법은 <>를 사용 않고 들여쓰기를 한다.
 * views폴더에 layouts폴더 생성 후 내부에 main.pug 파일 생성해서 layout 코딩하기
@@ -714,7 +714,7 @@ export default videoRouter
     ...
     // 나머지 템플릿파일들도 모두 생성해줌
     ````
-  <img src="./images/pugHome.png" />
+  <img src="./images/pugHome.png" width="400"/>
 
 #### Pug Partials 작업(조직화)
 * 프로그래밍은 분할정복이다.(하나씩 나눠가면서 처리해야함)
@@ -820,7 +820,7 @@ export default videoRouter
                     a(href=routes.login) Log In // 이제 클릭하면 url 변경된다.
     
     ````
-    <img src="./images/locals.png" />
+    <img src="./images/locals.png" width="400"/>
 ..
 
 #### Pug - Templates 에 Controller 정보 추가 - 템플릿마다 정보듣 다르게 추가하는 방법
@@ -1140,9 +1140,9 @@ videoRouter.post(routes.upload, uploadVideo, postUpload); // 이부분에 upload
 // mluter middleware를 통해서 업로드한 파일의 url을 알아내는 기능을 구현
 ````
 * 이제 브라우저에서 업로드를 테스트 해보면 multer가 프로젝트에 videos폴더생성하고 그 안에 파일을 생성한다.
-<img src="./images/multer.png"/>
+<img src="./images/multer.png" width="400"/>
 * 또 multer가 file이란 객체도 주는데 poasUpload메소드에서 console.log로 확인해보니 이미지와 같다.
-<img src="./images/multerFile.png"/>
+<img src="./images/multerFile.png" width="400"/>
 * path가 우리가 원하는 파일의 주소임!
 
 * 이제 multer의 기능을 이용해서 videoControllers.js에서 postUpload함수에서 비동기 처리를 구현해서 video 요소 생성해보기!!
@@ -1170,7 +1170,7 @@ export const postUpload = async (req, res) => {
 ...
 ````
 * 브라우저 해서 업로드 해본 결과는?!?!? 두구두구
-<img src="./images/newVideo.png"/>
+<img src="./images/newVideo.png" width="400"/>
 * home에 가면 이렇게 내가 업로드 한 비디오가 생겨있다.!
-<img src="./images/result.png"/>
+<img src="./images/result.png" width="400"/>
 
