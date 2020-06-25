@@ -382,7 +382,7 @@
 
     ````
 * 실행 후 브라우저에서 /user 로 접속한 결과
-<img src="./images/user.png" />
+<img src="./images/user.png" width="300" />
 <img src="./images/user:edit.png" />
 <img src="./images/user:password.png" />
 
@@ -1170,7 +1170,7 @@ export const postUpload = async (req, res) => {
 ...
 ````
 * 브라우저 해서 업로드 해본 결과는?!?!? 두구두구
-<img src="./images/newVidep.png"/>
+<img src="./images/newVideo.png"/>
 * home에 가면 이렇게 내가 업로드 한 비디오가 생겨있다.!
 <img src="./images/result.png"/>
 
