@@ -920,6 +920,8 @@ db.on("error", handleError)
 // init.js
 import "./db"
 ````
+
+
 <img src="./images/mongoDB.png" />
     
 ## dotenv 구성
