@@ -18,7 +18,14 @@ const VideoSchema = new mongoose.Schema({
   createAt: {
     type: Date ,
     default: Date.now
+  },
+  comments: [
+    {
+    type: mongoose.Schema.Types.ObjectId, // 이렇게 하면 모든 Comment의 정보를 여기 넣는게 아니라 Comment의 ID만 넣는 것 이다.
+                                          // [1,2,4,7]이런식으로 Video와 연결된 Comment들의 ID가 저자오디는 것 이다.
+    ref: "Comment"
   }
+  ]
 });
 
 

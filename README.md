@@ -983,8 +983,8 @@ const VideoSchema = new mongoose.Schema({
     type: String,
     required: "Title is required"
   },
-  description: String,
-  views: {
+  description: String, // 더 주고싶은 옵션이 없다면 한줄로 충분하다.!
+  views: { // 더 주고싶은 옵션이 있다면 객체로 만들어야 한다.
     type: Number,
     default: 0
   },
@@ -1005,4 +1005,58 @@ export default model;
 ````javascript
 // init.js
 import "./models/Video"
+````
+
+### Comment model 생성하기
+* models폴더 내부에 Comment.js생성
+
+* 한쪽에서 video를 생성하고, 다른쪽에서 Comment를 생성했을 떄 두개를 어떻게 연결시킬까?
+    1. comment에 연결된 videio ID를 Comment에 넣어 줄것인가.(CommentSchema에서 ref:"Video")
+    2. vidio에 - comment ID들을 array로 video에 넣을것인가.(VideoSchema에서 ref:"Comment")
+        * Object ID들의 array생성하기
+    * 나는 두번째 방법을 선택했다.
+
+````javascript
+// models/Comment.js
+// 방법 1 comment에 연결된 videio ID를 Comment에 넣어 주는방법
+
+
+import mongoose from "mongoose";
+
+const CommentSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: "Text is required"
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }, video: {
+    type: mongoose.Schema.Types.ObjectId, // 이 comment는 이 video와 연결되어있고 이 videio type은 ~
+    ref: "Video" // 이때 ObjectId가 어느 model에서 온건지 알려둬야한다.
+  } // Databade에는 video: 1 이런식으로 저장 될 것이고 mongoose에게 ID 1에 해달하는 Videio를 가져오라고 할 것이다.
+})
+// ( comment를 생성하면 text,createdAt,videio : 1이런식의 저장될것이다. )
+const model = mongoose.model("Comment", CommentSchema)
+export default model;
+
+
+// 방법 2 vidio에 - comment ID들을 array로 video에 넣어주는 방법
+const VideoSchema = new mongoose.Schema({
+...
+...
+...
+
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId, // 이렇게 하면 모든 Comment의 정보를 여기 넣는게 아니라 Comment의 ID만 넣는 것 이다.
+                                          // [1,2,4,7]이런식으로 Video와 연결된 Comment들의 ID가 저자오디는 것 이다.
+    ref: "Comment"
+  }]
+});
+````
+
+* 아직 Database는 인지못하고있다. 즉 생성한 모델을 Database가 인식하게 해주기위해서 init.js에 import 해주기
+````javascript
+// init.js
+import "./models/Comment" // 이렇게 해줘야 Database가 작동한다.
 ````
