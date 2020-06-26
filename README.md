@@ -1234,7 +1234,7 @@ export const videoDetail = async (req, res) =>{
 ````
 <img src="./images/videoInfo.png" width="600"/>
 
-#### videoDetail 템플릿에서 db에서 받은 정보들로 화면 그리기 작업 다시하기
+### videoDetail 템플릿에서 db에서 받은 정보들로 화면 그리기 작업 다시하기
 * 작업할 기능들
     1. 영상(o)
     2. 타이틀(o)
@@ -1259,7 +1259,7 @@ block content
 ````
 
 
-#### editVideo
+### editVideo
 * 비디오 수정 후 서버에 업뎃 요청하기!
 ````javascript
 // views/videoDetail.pug
@@ -1337,6 +1337,60 @@ export const postEditVideo = async (req, res) => {
     res.redirect(routes.home);
   }
 };
+...
+
+````
+
+
+### delete Video구현
+* deletevide는 get 요청만 있을 것이다. 
+* 비디오 삭제를 누르면 이 부분의 URL을 가져와서 해당하는 비디오를 삭제할 것이다. post로는 할일이 없다.
+````javascript
+// routes.js
+...
+  deleteVideo: id => { // 아이디 받으면서 deletepage로 이동
+    if(id) {
+      return `/videos/${id}/delete`;
+    } else {
+      return DELETE_VIDEO;
+    }
+  }
+};
+
+// views/editVideo.pug
+
+extends layouts/main
+
+block content
+    .form-container
+        form(action=routes.editVideo(video.id), method="post") 
+            input(type="text", placeholder="Title", name="title", value=video.title)
+            textarea(name="description", placeholder="Description")=video.description
+            input(type="submit", value="Update Video")
+    a.form-container__link.form-container__link--delete(href=routes.deleteVideo(video.id)) Delete Video // 삭제버튼 클릭하면 삭제하는 함수 실행(인자는 해당비디오)
+
+
+// Router/videoRouter.js
+...
+videoRouter.get(routes.deleteVideo(), deleteVideo); // 함수로 바뀐부분은 이렇게 () 호출을 해야 함수가 실행된다.
+...
+
+
+//  Controller/videoController.js
+...
+export const deleteVideo = async (req, res) => {
+  const {
+    params: {id}
+  } = req;
+  try { // db에서 해당 비디오 찾아서 지우기
+    await Video.findOneAndRemove({_id: id}); // 이런 메소드는 몽구스공식문서에서 찾아보기!
+    res.render("deleteVideo", {pageTitle: "DeleteVideo"});
+  } catch (error) {
+    console.log(error)
+  }
+  res.redirect(routes.home) // 실패하던 성공하면 home으로 가고싶어서 밖으로 아예 뻈다.
+
+}
 ...
 
 ````
