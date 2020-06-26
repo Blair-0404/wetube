@@ -1470,7 +1470,7 @@ block content
     * sass, modernJS 등  => webpack => css, JS
     * 즉 웹팩은 브라우저가 읽을 수 있는 안정된(오래된?) 파일들로 변환해주는 역할을 한다.
         * 웹팩과 바벨의 차이?;; 바벨은JS만?
-## Webpack사용하기 npm install webpack webpack-cli, webpack.config.js 파일생성하기
+### Webpack사용하기 npm install webpack webpack-cli, webpack.config.js 파일생성하기
 1. npm install webpack webpack-cli
 2. package.json 에서 scripts에서  
     * "start" -> "dev:server" 로 변경
@@ -1490,9 +1490,9 @@ block content
 ...
   "scripts": {
     "dev:server": "nodemon --exec babel-node init.js --delay 2",
-    "dev:assets" : "webpack"
+    "dev:assets": "WEBPACK_ENV=development webpack",
+    "build:assets": "WEBPACK_ENV=production webpack"
   },
-...
 ````
 
     
@@ -1515,7 +1515,7 @@ module.export = config;
 ````    
 * 이제 각각의 터미널에 npm run dev:assets & npm run dev:server
 
-# webpack 공부하기 #4.0 ~ #4.3
+### webpack 공부하기 #4.0 ~ #4.3
 * 어렵게 느껴지더라도 일단은 아래 흐름을 이해하는 정도로만 하기
 * sass-loader은 sass를 css로 옮겨주고 -> postcss-loader은 특정 plugin들을  css에 대해 실행시켜주고 ->
 * -> css-loader은 css를 가져와주고 ExtractCSS로 그 부분만 추출해주는거다.

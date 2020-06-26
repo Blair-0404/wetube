@@ -7,10 +7,18 @@ const ENTRY_FILE = path.resolve(__dirname, "assets", "js", "main.js"); // 어디
 const OUTPUT_DIR = path.join(__dirname, "static"); // 어디로 보내는지?
 
 const config = {
-  entry: ENTRY_FILE,
+  entry: ["@babel/polyfill", ENTRY_FILE],
   mode: MODE,
   module: {
     rules: [
+      {
+        test: /\.(js)$/,
+        use: [
+          {
+            loader:"babel-loader"
+          }
+        ]
+      },
       {
         test: /\.(scss)$/,
         use: ExtractCSS.extract([
@@ -20,7 +28,7 @@ const config = {
           {
             loader: "postcss-loader",
             options: {
-              plugin() {
+              plugins() {
                 return [autoprefixer({ browsers: "cover 99.5%"})]
               }
             }
