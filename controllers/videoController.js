@@ -53,6 +53,34 @@ export const videoDetail = async (req, res) =>{
 
   }
 }
-export const editVideo = (req, res) => res.render("editVideo", { pageTitle: "EditVideo" });
+export const getEditVideo = async (req, res) => {
+  const {
+    params: {id} // id 가져오기
+  } = req;
+  try {
+    const video = await Video.findById(id)
+    res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
+
+  } catch (error) {
+    res.redirect(routes.home);
+  } // 만일 해당 비디오를 못찾으면 존재하지 않는 비디오를 수정하는 것이니 error처리로 home으로 보내기로 함
+}
+
+
+// 어떤 비디오를 수정하는지 알아야 한다.
+export const postEditVideo = async (req, res) => {
+  const {
+    params: {id},
+    body: {title, description} // db의 비디오 정보의 속성
+  } = req;
+  try {
+    await Video.findOneAndUpdate({_id: id},{title, description} )
+    // 이 기능은 서버에세 데이터 전송해서 업데이트 요청만하고 다시 무언가를 받아올 필요가 없기 떄문에 변수에 담지 않는 것 이다,
+    res.redirect(routes.videoDetail(id)); // 수정된 비디오 정보가 잘 반영됬는지 확인하고싶다!
+  } catch(error) {
+    res.redirect(routes.home);
+  }
+};
+
 export const deleteVideo = (req, res) => res.render("deleteVideo", { pageTitle: "DeleteVideo" });
 

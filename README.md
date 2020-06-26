@@ -1259,3 +1259,84 @@ block content
 ````
 
 
+#### editVideo
+* 비디오 수정 후 서버에 업뎃 요청하기!
+````javascript
+// views/videoDetail.pug
+...
+block content
+    .video__player
+        video(src=`/${video.fileUrl}`)
+    .video__info
+        a(href=routes.editVideo(video.id)) Edit Video // 이부불을 클릭하면 editPage로 이동하기(id를 그대로 넘겨주면서!)
+        h5.video__title=video.title
+        span.video__views=video.views
+        p.video__description=video.description
+
+
+// views/editVideo.pug
+
+extends layouts/main
+
+block content
+    .form-container
+        form(action=routes.editVideo(video.id), method="post") //  id넘겨받고
+            input(type="text", placeholder="Title", name="title", value=video.title)//  해당비디오의 현재 저장된 타이들
+            textarea(name="description", placeholder="Description")=video.description
+            input(type="submit", value="Update Video")
+        a.form-container__link.form-container__link--delete(href=`/videos${routes.deleteVideo}`) Delete Video
+
+
+// routes.js
+const routes = {
+...
+  editVideo: id => { // 넘겨받은 아이디를 url에 표시
+    if(id) {
+      return `/videos/${id}/edit`;
+    } else {
+      return EDIT_VIDEO;
+    }
+  },
+  deleteVideo: DELETE_VIDEO
+};
+...
+
+//  Routers/videoRouter.js
+...
+videoRouter.get(routes.editVideo(), getEditVideo); // 수정페이지 들어갈때 현재 비디오의 정보들 요청해야함
+videoRouter.post(routes.editVideo(), postEditVideo); // 수정사항 입력 후 서버에 업뎃을 post요청 해야함
+...
+
+// Controllers/videoController.js
+...
+export const getEditVideo = async (req, res) => {
+  const {
+    params: {id} // id 가져오기
+  } = req;
+  try {
+    const video = await Video.findById(id)
+    res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
+
+  } catch (error) {
+    res.redirect(routes.home);
+  } // 만일 해당 비디오를 못찾으면 존재하지 않는 비디오를 수정하는 것이니 error처리로 home으로 보내기로 함
+}
+
+
+// 어떤 비디오를 수정하는지 알아야 한다.
+export const postEditVideo = async (req, res) => {
+  const {
+    params: {id},
+    body: {title, description} // db의 비디오 정보의 속성
+  } = req;
+  try {
+    await Video.findOneAndUpdate({_id: id},{title, description} )
+    // 이 기능은 서버에세 데이터 전송해서 업데이트 요청만하고 다시 무언가를 받아올 필요가 없기 떄문에 변수에 담지 않는 것 이다,
+    res.redirect(routes.videoDetail(id)); // 수정된 비디오 정보가 잘 반영됬는지 확인하고싶다!
+  } catch(error) {
+    res.redirect(routes.home);
+  }
+};
+...
+
+````
