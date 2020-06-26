@@ -1406,4 +1406,45 @@ export const deleteVideo = async (req, res) => {
 #### npm install prettier 
 
 
-### search (video) 
+### search 기능 구현
+* 키워드 입력시 키워드가 포함된 제목들인 비디오를 모두 불러오고싶다. 
+````javascript
+//  Controller/videoController.js
+...
+export const search = async (req, res) => { // 검색한 단어가 포함된 모든 단어를 찾기!
+  const {
+    query: {term: searchingBy}
+  } = req;
+  let videos = []; // 일단 빈배열로 생성
+
+  try { // 정규표현식으로 검색어가 포함된 비디오제목들을 찾을 것 이다.
+    videos = await Video.find(
+      {title: { $regex:searchingBy, $options: "i"} // i는 대소문자 구분 안한다는 옵션을 준것이다. (insensitive)
+      })
+    // {title: {searchingBy}로 했다면 완전 일치하는 단어를 찾는 것 이다.
+  } catch (error) {
+    console.log(error)
+  }
+  res.render("search", {pageTitle: "Search", searchingBy, videos }); // 이떄는 빈배열인 상태일 것이다.
+};
+...
+
+// views/search.pug
+extends layouts/main
+include mixins/videlBlock
+
+block content
+    .search__header
+        h3 Searching for: #{searchingBy}
+    .search__videos
+        if videos.length === 0 // 검색어가 포함되는 비디오 제목들이 없어서 빈 비디오 배열이 돌아오면
+            h5 No Videos Found
+        each item in videos
+            +videoBlock({
+              title:item.title,
+              views:item.views,
+              videoFile:item.videoFile,
+              id: item.id
+            })
+
+````

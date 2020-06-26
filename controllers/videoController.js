@@ -15,11 +15,21 @@ export const home = async (req, res) => { // 비동기를 해주지 않으면 �
 };
 
 
-export const search = (req, res) => {
+export const search = async (req, res) => { // 검색한 단어가 포함된 모든 단어를 찾기!
   const {
     query: {term: searchingBy}
   } = req;
-  res.render("search", {pageTitle: "Search", searchingBy, videos});
+  let videos = []; // 일단 빈배열로 생성
+
+  try { // 정규표현식으로 검색어가 포함된 비디오제목들을 찾을 것 이다.
+    videos = await Video.find(
+      {title: { $regex:searchingBy, $options: "i"} // i는 대소문자 구분 안한다는 옵션을 준것이다. (insensitive)
+      })
+    // {title: {searchingBy}로 했다면 완전 일치하는 단어를 찾는 것 이다.
+  } catch (error) {
+    console.log(error)
+  }
+  res.render("search", {pageTitle: "Search", searchingBy, videos }); // 이떄는 빈배열인 상태일 것이다.
 };
 
 export const getUpload = (req, res) => res.render("upload", {pageTitle: "Upload"});
