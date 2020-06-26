@@ -1461,3 +1461,56 @@ block content
         else
             span.video__comment-number #{video.comments.length} comments
 ````
+
+
+# < FrontEnd >
+## Webpack = module bundler이다.
+* 많은 파일들을 가져와서 웹팩에게 주면 웹팩은 그것들을 완전 호환되는 static 파일들로 변환해서 준다.
+* 본 프젝에서 프론트엔드는  vanillaJS + sass 사용할 예정
+    * sass, modernJS 등  => webpack => css, JS
+    * 즉 웹팩은 브라우저가 읽을 수 있는 안정된(오래된?) 파일들로 변환해주는 역할을 한다.
+        * 웹팩과 바벨의 차이?;; 바벨은JS만?
+## Webpack사용하기 npm install webpack webpack-cli, webpack.config.js 파일생성하기
+1. npm install webpack webpack-cli
+2. package.json 에서 scripts에서  
+    * "start" -> "dev:server" 로 변경
+    *  "dev:assets" : "webpack" 도 추가해주기 // 웹팩 부르도록 설정
+        * dev:assets 이 실행되면 webpack은 자동적으로 webpack.config.js파일을 찾으려 할 것 이다.
+    * 이제 npm start로 시작안하고 npm run dev:server 와 npm run dev:assets를 각자 다른 콘솔에서 실행해야 한다.
+3. webpack.config.js 파일생성하기
+    * 하나는 파일에서 webpack 을 사용하기 위함이고, 또 하나는 cli 에서 Webpack을 사용하기 위함이다.
+    * 이 파일에서 명심해야 할 것은 server 코드와는 연관시키지 말아야 한다는 점이다. 오직 client code만 넣기
+    * 이 파일에서는 아직 babel이 인식을 못해서 예전 JS로 코딩해줘야 한다. (즉 모던JS파일이 아니라서 import같은걸 할 수 없다.)
+    * webpack은 두가지를 갖고있다 - entry(파일들이 어디에서 왔는가?) and output(온 파일들을 어디에 넣을 것 인가?)   
+4. assets폴더 생성 후 그 안에
+    * js 폴더 생성
+    * SCSS 폴더 생성 
+````javascript
+// package.json
+...
+  "scripts": {
+    "dev:server": "nodemon --exec babel-node init.js --delay 2",
+    "dev:assets" : "webpack"
+  },
+...
+````
+
+    
+````javascript
+// webpack.config.js
+import path from "path" // 아래과 같다 다만 이 경우는 모던JS(ES6+)
+const path = require("path"); // 예전 JS의 import 방식줄(이 파일은 모던JS파일이 아니라 안정버전으로 써줘야 한다.)
+
+const ENTRY_FILE = path.resolve(__dirname, "assets", "js", "main.js"); // 어디에서 왔는지?
+const OUTPUT_DIR = path.join(__dirname, "static"); // 어디로 보내는지?
+
+const config = {
+  entry: ENTRY_FILE,
+  output: {
+    path: OUTPUT_DIR,
+    filename: "[name].[format]"
+  }};
+
+module.export = config;
+````    
+* 이제 각각의 터미널에 npm run dev:assets & npm run dev:server
