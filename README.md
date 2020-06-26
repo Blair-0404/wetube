@@ -1086,7 +1086,7 @@ export const home = async (req, res) => { // 비동기를 해주지 않으면 �
 ...
 ````
 
-### Upload 기능 1. 비디오아닌 파일은 들어오지 않게하기
+### 비디오 Upload 기능 1. 비디오아닌 파일은 들어오지 않게하기
 * upload.pug에서 처리함
 ````javascript
 // views/upload.pug
@@ -1098,7 +1098,7 @@ export const home = async (req, res) => { // 비동기를 해주지 않으면 �
 ...
 ````
 
-### Upload 기능 2. DB에 업로드한 파일의 location(url)을 저장하기 
+### 비디오 Upload 기능 2. DB에 업로드한 파일의 location(url)을 저장하기 
 * 중요한건 파일 자체를 저장하지않고 파일의 location!!을 저장하려는 것 이다.
 * 어떻게 user가 videiofile을 선택해서 upload하고 해당 file url을 얻고 그 url로 video 생성 해야할까????
     * file을 upload하고 URL을 반환하는 middleware를 사용해보자!!!
@@ -1207,5 +1207,55 @@ const multerVideo = multer({ dest: "uploads/videos/" }); // 이제 업로드를 
 * 업로드 함과 동시에 middleware.js에서 설정해준 것 처럼 프로젝트 구조에 uploads/videos/파일생성이 된다.
 <img src="./images/newfolder.png" width="300"/>
 * 하지만 이렇게 파일들을 다루는것은 사실 좋지 않다. (규모가 커질수록)
+    * 무거워지기 때문에 서버에 파일들있는 것 보다 아마존에 맡기는게 좋을 것 같다.. 뒤에서..!할 예정
 
-### Upload - avatar opload 기능
+### videoDetail 템플릿에 현재 비디오에 대한 정보들 받아오기(db에서)
+* video를 클릭하면 videoDetail 페이지로 이동하게된다 -> videoDetail 템플릿 페이지에 현재 비디오의 정보들을 그려주고싶다.
+* videoDetail 템플릿에 video정보들을 넘겨주기 위해 Controller/videoController.js에서 videoDetail func에서 비동기 처리 등 해주기
+````javascript
+// Controller/videoController.js
+export const videoDetail = async (req, res) =>{
+  console.log(req.params); // { id: '5ef5ae14ba9c95358860c825' } 가 콘솔에 찍힌다
+  // (routes.js에서 const VIDEO_DETAIL = "/:id"; 로 해줬기 떄문에)
+  const {
+    params: {id}
+  } = req; // url변수인 id뽑기
+
+  try{
+    const video = await Video.findById(id); // video db에서 윗줄에서 뽑은 id와 같은 비디오 찾기!
+    console.log(video) // 현재 보고있는 비디오의 상세정보 확인!
+    res.render("videoDetail", { pageTitle: "VideoDetail", video }); // video: video로 템플릿에도 전달(화면에 video정보 뿌리기 위해)
+  } catch (error) {
+    console.log(error)
+    res.redirect(routes.home);
+
+  }
+}
+````
+<img src="./images/videoInfo.png" width="600"/>
+
+#### videoDetail 템플릿에서 db에서 받은 정보들로 화면 그리기 작업 다시하기
+* 작업할 기능들
+    1. 영상(o)
+    2. 타이틀(o)
+    3. 조회수 (o)
+    4. 유저이름
+    5. 댓글
+    6. 수정기능 버튼(비디오를 만든 사람만 볼 수 있게 하고싶다.)(o)
+* 위에 controller로부터 video라는 이름으로 정보들담긴 Obj를 받은상태이다!
+````javascript
+// views/videoDetail.pug
+
+extends layouts/main
+
+block content
+    .video__player
+        video(src=`/${video.fileUrl}`) // 비디오 // 지금은 서버에 파일이 있기 떄문에  /을 꼭 붙여줘야한다.
+    .video__info
+        a(href=routes.editVideo) // 수정기능 버튼
+        h5.video__title=video.title // 타이들
+        span.video__views=video.views // 조회수
+        p.video__description=video.description
+````
+
+

@@ -33,12 +33,26 @@ export const postUpload = async (req, res) => {
     title,
     description
   });
-  console.log(newVideo) // test!
-  console.log(newVideo.id) // test!
   res.redirect(routes.videoDetail(newVideo.id)) // 위에서 비동기처리로 비디오 요소가 만들어진 후이기 때문에 id를 잘 뽑아낼 수 있다.
 };
 
-export const videoDetail = (req, res) => res.render("videoDetail", { pageTitle: "VideoDetail" });
+export const videoDetail = async (req, res) =>{
+  console.log(req.params); // { id: '5ef5ae14ba9c95358860c825' } 가 콘솔에 찍힌다
+  // (routes.js에서 const VIDEO_DETAIL = "/:id"; 로 해줬기 떄문에)
+  const {
+    params: {id}
+  } = req; // url변수인 id뽑기
+
+  try{
+    const video = await Video.findById(id); // video db에서 윗줄에서 뽑은 id와 같은 비디오 찾기!
+    console.log(video); // 현재 보고있는 비디오의 상세정보 확인!
+    res.render("videoDetail", { pageTitle: "VideoDetail", video: video }); // video: video로 템플릿에도 전달(화면에 video정보 뿌리기 위해)
+  } catch (error) {
+    console.log(error)
+    res.redirect(routes.home);
+
+  }
+}
 export const editVideo = (req, res) => res.render("editVideo", { pageTitle: "EditVideo" });
 export const deleteVideo = (req, res) => res.render("deleteVideo", { pageTitle: "DeleteVideo" });
 
