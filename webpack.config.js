@@ -1,5 +1,5 @@
-import path from "path" // 아래과 같다 다만 이 경우는 모던JS(ES6+)
 const path = require("path"); // 예전 JS의 import 방식줄(이 파일은 모던JS파일이 아니라 안정버전으로 써줘야 한다.)
+const autoprefixer = require("autoprefixer");
 const ExtractCSS = require("extract-text-webpack-plugin");
 
 const MODE = process.env.WEBPACK_ENV;
@@ -18,7 +18,12 @@ const config = {
             loader: "css-loader"
           },
           {
-            loader: "postcss-loader"
+            loader: "postcss-loader",
+            options: {
+              plugin() {
+                return [autoprefixer({ browsers: "cover 99.5%"})]
+              }
+            }
           },
           {
             loader: "sass-loader"
@@ -29,8 +34,10 @@ const config = {
   },
   output: {
     path: OUTPUT_DIR,
-    filename: "[name].[format]"
-  }
+    filename: "[name].js"
+  },
+  plugins: [new ExtractCSS("styles.css")]
+
 };
 
 module.exports = config;

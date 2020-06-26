@@ -1514,3 +1514,9 @@ const config = {
 module.export = config;
 ````    
 * 이제 각각의 터미널에 npm run dev:assets & npm run dev:server
+
+# webpack 공부하기 #4.0 ~ #4.3
+* 어렵게 느껴지더라도 일단은 아래 흐름을 이해하는 정도로만 하기
+* sass-loader은 sass를 css로 옮겨주고 -> postcss-loader은 특정 plugin들을  css에 대해 실행시켜주고 ->
+* -> css-loader은 css를 가져와주고 ExtractCSS로 그 부분만 추출해주는거다.
+    
