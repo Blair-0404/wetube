@@ -1174,3 +1174,38 @@ export const postUpload = async (req, res) => {
 * home에 가면 이렇게 내가 업로드 한 비디오가 생겨있다.!
 <img src="./images/result.png" width="400"/>
 
+### upload까지는 됬지만 home에서 비디오들이 아직은 재생이 안된다.(link가 망가져서)
+* 즉 mongoDB model이 한 document를 Database에 저장했는데 그 documnet는 잘못된 URL을 갖고있다.
+    1. 일단 저절도 생성된 video폴더 삭제 
+    2. middleware.js 에서 const multerVideo = multer({ dest: "uploads/videos/" }); 로 dest를 변경해주기
+    3. routes에도  Upload를 위한 기본적인 route 생성해줘야한다
+    * 이제 dest를 올바르게 바꿧으니 아래에서 테스트해보면 업로드가 문제없이 될 것 이다.  
+* database에서 업로드 했던 video삭제하는 방법
+    * mongo와 대화하기
+    * 터미널에서 mongo -> help -> use we-tube -> show collection 입력하면 아래처럼 현재생성된 datamodel 보여준다.
+<img src="./images/db.png" width="400"/>
+* 삭제해보기 위해서 명령어 입력하면 삭제하고 삭제한 갯수 알려준다. -> exit으로 끄기
+<img src="./images/dataRemove.png" width="400"/>
+
+#### 빠뀐 dest에 upload다시 해보기
+````javascript
+// app.js
+...
+app.use("/uploads", express.static("uploads")) // 누군가가 /uploads로 간다면 express.static(directory명)을 이용
+// express.static() 은 directory에서 file을 보내주는 middleware func이다.
+...
+
+
+// middleware.js
+...
+const multerVideo = multer({ dest: "uploads/videos/" }); // 이제 업로드를 하면 multer가 uploads/videos/ 의 경로에 파일을 저장할 것 이다.
+...
+
+````
+* 이제 업로드 후 홈화면으로 가면 영상재생이 잘 된다.!
+<img src="./images/bori.png" width="300"/>
+* 업로드 함과 동시에 middleware.js에서 설정해준 것 처럼 프로젝트 구조에 uploads/videos/파일생성이 된다.
+<img src="./images/newfolder.png" width="300"/>
+* 하지만 이렇게 파일들을 다루는것은 사실 좋지 않다. (규모가 커질수록)
+
+### Upload - avatar opload 기능
