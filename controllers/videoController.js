@@ -5,7 +5,7 @@ import Video from "../models/Video"; // 이건 Database의 element가 아니라 
 
 export const home = async (req, res) => { // 비동기를 해주지 않으면 없는 video를 찾게된다.
   try {
-    const videos = await Video.find({}); // Video.find({})로 Database에 있는 모든 Video를 가져오는 것을 기다려달라 해야한다.
+    const videos = await Video.find({}).sort({_id: -1}); // Video.find({})로 Database에 있는 모든 Video를 가져오는 것을 기다려달라 해야한다.
     // throw Error("에러!"); // 에러가 나도 catch로 처리를 해줬기 때문에 home화면이 잘 그려질 것이다. // 하지만 try,catch가 아닌 상태에서 에러나면 Nodejs가 뻗어서 브라우저도 연결이 끊긴다.
     res.render("home", {pageTitle: "Home", videos}); // res.render(첫인자 템플릿, 두번쨰인자 템플릿에 추가할 정보가 담긴객체)
   } catch (error) { // 에러처리를 하지않으면 Video.find({})가 실패하더라도 res.render가 진행되서 꼬이기 때문에 에러처리 해줘야한다.

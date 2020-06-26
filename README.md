@@ -1394,3 +1394,16 @@ export const deleteVideo = async (req, res) => {
 ...
 
 ````
+
+### ES Lint?  npm install eslint -g -> eslint --init 으로 실행
+* Linter는 뭔가 틀린게 있거나 사용되지 않는 부분이 있으면 바로 알려준다.
+* npm 설치시 -g 를 붙이는 이유? 
+    * npm은 package를 설치하는 것 이다.(현재 폴더에 있는 node_modules에) 
+    * 하지만 떄떄로 내 컴퓨터의 아무곳에서 나 사용하고 싶을 수 도 있다 그런경우 -g(lobal) 붙인다.
+    * 모든 프젝에서 사용가능!
+#### npm install eslint-config-prettier
+#### npm install eslint-plugin-prettier
+#### npm install prettier 
+
+
+### search (video) 
