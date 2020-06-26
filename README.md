@@ -1448,3 +1448,16 @@ block content
             })
 
 ````
+
+### comments 기능
+* 댓글달기의 기능은 AJAX + JS로 아래에서 프론트 부분에서 구현할 것이다.
+* 여기서는 간단히 비디오 마다 현재 댓글이 몇개인지 마크업으로 간단히 표시하는 작업만 해봤다.
+````javascript
+// views/videoDetail.pug
+...
+    .video__comments
+        if video.comments.length === 1
+            span.video__comment-number 1 comment
+        else
+            span.video__comment-number #{video.comments.length} comments
+````
