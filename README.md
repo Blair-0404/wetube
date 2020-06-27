@@ -1520,3 +1520,6 @@ module.export = config;
 * sass-loader은 sass를 css로 옮겨주고 -> postcss-loader은 특정 plugin들을  css에 대해 실행시켜주고 ->
 * -> css-loader은 css를 가져와주고 ExtractCSS로 그 부분만 추출해주는거다.
     
+    
+# < frontend SCSS >
+## Header부분 SCSS style

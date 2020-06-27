@@ -1,4 +1,4 @@
-import "../SCSS/style.scss";
+import "../scss/style.scss";
 
 const something = async () => {
   console.log("썸")
