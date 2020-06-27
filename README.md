@@ -1521,5 +1521,66 @@ module.export = config;
 * -> css-loader은 css를 가져와주고 ExtractCSS로 그 부분만 추출해주는거다.
     
     
-# < frontend SCSS >
-## Header부분 SCSS style
+# < frontend >
+## styles
+### SCSS사용해서 스타일
+
+##  인증기능! - Passport 미들웨어 사용(사용자 인증을 구현시켜주는 미들웨어)
+* Passport 모듈 좋은점  
+    * 대부분의 다른 서비스들(페북, 구글, 깃헙, 트위 등)로부터 인증을 받을 수 있다.
+    * 다른 모듈들도 지원해준다.
+    * 사용하기가 수월하다.(통합시키기가 수월하다.)
+    * Passport의 역할?
+        * 쿠키생성, 브라우저에 저장, 유저에게 해당 쿠키 전달
+* 인증? 브라우저 상에 cookies를 설정해주면 그것을 통해 사용자의 ID등을 알 수 있고 passport가 브라우저에서 자동으로 쿠키를 가져와서 인증이 완료된 User Object를 controller에 넘겨준다.터
+* 쿠키? 우리가 브라우저에 저잘 할 수 있는것들이다. 크롬브라우저는 검사->Application으로 가면 볼 수 있다.
+    * 여기에는 모든 요청(request - 로그인, 가입, 홈으로가기 등등)에 대해서 back-end로 전송될 정보들이 담겨 있다.
+
+### Passport사용 npm install passport-local-mongoose
+* 패스워트 설정, 패스워트 확인 등의 것들을 자동으로 해준다.
+* 설치 후 User model에 import시켜주기
+* passport-local-mongoose는 사용시 설정객체가 필요함 (공식문서 참고해보기)
+
+#### User Object만들기
+* 일단 models/User.js 파일 생성해주기 
+* User가 가질 fields
+    * 이름
+   * 이메일
+    * 페북아이디
+    * 깃헙아이디
+    * 아바타 URL
+````javascript
+// models/User.js
+
+import mongoose from "mongoose"
+import passportLocalMongoose from "passport-local-mongoose";
+
+// 스키마 생성
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  avatarUrl:String,
+  facebookId: Number,
+  githubId: Number
+  // 소셜 계정을 위한 ID를 써넣는다.
+  // 예를들어 누군가 깃헙 계정으로 로그인하면 그의 깃헙ID를 저장하려는 것 이다.
+  // 그래서 나중에는 이 모든 것을 하나의 사용자로 묶어줄 수 있게된다.
+  // 예를들어 내가 이메일을써서 로그인 하려고 하는데, 알고보니 이미 깃헙 계정으로도 가입했다는 것이 확인되면, 이미 로그인이 되어있음을 알려줄 수 있다.
+  // 계정을 깃헙이나 페북 등 다른서비스를 통해 가입이 가능하고 이렇게 만든 계정들에는 패스워드가 없을 것 이다.
+
+  // 어떻게? 사용자 정보에 이메일도 저장하고, 소셜계정도 저장하면 가능
+});
+
+// 스키마 추가
+UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
+
+const model = mongoose.Model("User", UserSchema);
+
+export default model;
+
+// init.js 에도 만든 모델을 import해주기
+import "./models/User";
+
+````
+   
+#### npm install passport passport-local
