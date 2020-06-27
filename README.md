@@ -1584,4 +1584,12 @@ import "./models/User";
 
 ````
    
-#### npm install passport passport-local
+#### npm install passport passport-local + etc
+####  npm install express-session 
+#### passport, cookie, session...
+* #6 ~ #6.4
+
+
+## MongoDB사용해서 세션저장하기
+### connect mongo 사용  ->  npm install connect-mongo
+* 이것을 사용해서 저장소 생성
