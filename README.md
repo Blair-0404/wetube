@@ -1535,6 +1535,7 @@ module.export = config;
 * 인증? 브라우저 상에 cookies를 설정해주면 그것을 통해 사용자의 ID등을 알 수 있고 passport가 브라우저에서 자동으로 쿠키를 가져와서 인증이 완료된 User Object를 controller에 넘겨준다.터
 * 쿠키? 우리가 브라우저에 저잘 할 수 있는것들이다. 크롬브라우저는 검사->Application으로 가면 볼 수 있다.
     * 여기에는 모든 요청(request - 로그인, 가입, 홈으로가기 등등)에 대해서 back-end로 전송될 정보들이 담겨 있다.
+    * 여기에는 너무 민감한 정보들은 담지 않는것이 좋다.
 
 ### Passport사용 npm install passport-local-mongoose
 * 패스워트 설정, 패스워트 확인 등의 것들을 자동으로 해준다.
