@@ -1593,3 +1593,40 @@ import "./models/User";
 ## MongoDB사용해서 세션저장하기
 ### connect mongo 사용  ->  npm install connect-mongo
 * 이것을 사용해서 저장소 생성
+
+## onlyPublic 미들웨어 생성
+* 로그인상태라면 join, login 페이지로는 안가도될것같다.
+    * home으로 redirect하기
+````javascript
+// middleware.js
+...
+export const onlyPublic = (req, res, next) => {
+  // 사용자가 있는 상태라면
+  if (req.user) { // 하지만 이 로그인된 사용자가 누구인지 알수 있게 해주는것은 passport 와 session 덕이라는거 기억하기!
+    res.redirect(routes.home); // join 할필요 없으니 홈으로 보내기
+  } else {
+    next()
+  }
+};
+...
+
+// routers/globalRouter.js  // 여기에서 이미 로그인된 상태라면 가지 않아도 될 부분에 onlyPublic 미들웨어 넣어주기
+...
+import {onlyPublic} from "../middlewares";
+
+const globalRouter = express.Router();
+
+globalRouter.get(routes.join, onlyPublic, getJoin);
+globalRouter.post(routes.join, onlyPublic, postJoin, postLogin); //가입 후 로그인 유도
+
+globalRouter.get(routes.login, onlyPublic, getLogin);
+globalRouter.post(routes.login, onlyPublic, postLogin);
+
+globalRouter.get(routes.home, home);
+
+globalRouter.get(routes.search, search);
+
+globalRouter.get(routes.logout, onlyPublic, logout);
+...
+
+````
