@@ -1630,3 +1630,167 @@ globalRouter.get(routes.logout, onlyPublic, logout);
 ...
 
 ````
+
+## onlyPublic 미들웨어 생성
+* 로그인상태라면 join, login 페이지로는 안가도될것같다.
+````javascript
+// middleware.js
+...
+// 로그인 되어있는 회원만 개인정보 관련된 페이지도 이동할 수 있게하는 미들웨어 생성
+export const onlyPrivate = (req, res, next) => {
+  if(req.user) {
+    next();
+  } else {
+    res.redirect(routes.home);
+  }
+};
+...
+
+// routers/videoRouter.js 
+...
+import {uploadVideo, onlyPrivate} from "../middlewares";
+
+videoRouter.get(routes.upload, onlyPrivate, getUpload);
+videoRouter.post(routes.upload, onlyPrivate, uploadVideo, postUpload);
+
+videoRouter.get(routes.videoDetail(), videoDetail);
+
+videoRouter.get(routes.editVideo(), onlyPrivate, getEditVideo);
+videoRouter.post(routes.editVideo(), onlyPrivate, postEditVideo);
+
+videoRouter.get(routes.deleteVideo(), onlyPrivate, deleteVideo); 
+...
+
+
+// // routers/userRouter.js 
+...
+import {onlyPrivate} from "../middlewares";
+
+useRouter.get(routes.editProfile, onlyPrivate, editProfile);
+useRouter.get(routes.changePassword, onlyPrivate, changePassword);
+useRouter.get(routes.userDetail(), userDetail);
+...
+
+````
+
+## Github Log in 
+### 깃헙 로그인은 어떤식으로 동작되는걸까?
+1. 일단 사용자를 깃허브 페이지로 보낸다.
+2. 깃헙이 App에게 사용자의 정보를 줘도 괜찮은지 사용자에게 물어볼 것 이다.
+3. 사용자가 괜찮다고 하면 (=사용자의 승인) 깃헙은 사용자를 다시 application으로 돌려보내고 사용자의 정보도 같이 돌려준다.
+
+### passport-github 사용  -> npm install passport-github
+* [문서](https://www.npmjs.com/package/passport-github)
+#### 깃헙 개발자 페이지에서 application등록 해야한다.
+    1. 깃허브에서 setting -> Developer Setting -> OAuth Apps -> Register a new application 
+    2. 입력 후 Register application
+    3. 생성된 깃헙app정보 에서 Client ID와 Client Secret키를  .env에 저장해주기(반드시 .env는 .gitignore되야함) 
+* 아래처럼 입력     
+    <img src="./images/github.png" width="700" height="700" />
+* 아래처럼 생성된다!
+    <img src="./images/githubApp.png" width="700" height="700" />
+#### 설치한 깃헙 로그인 기능 구현학기  
+1. passport.js에서 GithubStrategy import시키고 passport.use로 사용해주기
+2. 문서보면서 옵션들 넣어주기()
+3. 사용자가 깃헙으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수(는 controller에서 생성 후 import해주기)
+
+#### /auth/github(/callback) route만들기
+* 누군가가 /auth/github 로 오면 passport인증 시킬 것 이다.
+
+````javascript
+// views/sicialLogin.pug
+...
+    button.sicial-login--github
+        a(href=routes.github) // 클릭하면 라우터 타고 이동하도록 href 걸어줌
+...
+
+
+
+// routes.js
+...
+// Github
+const GITHUB = "/auth/github";
+const GITHUB_CALLBACK = "/auth/github/callback";
+...
+  github: GITHUB,
+  githubCallback: GITHUB_CALLBACK
+...
+
+
+
+// routers/globalRouter.js
+...
+globalRouter.get(routes.github, githubLogin); // 1. 사용자가 깃허브 버튼누르면 깃헙으로 가는 부분 라우터처리
+
+globalRouter.get( // 4 사용자가 돌아오면서 실행되는 부분
+  routes.githubCallback, // 이 라우터로 돌아오게 3-0 함수 옵션에서 내가 지정해줌
+  passport.authenticate("github", {failureRedirect: "/login"}),
+  postGithubLogIn // 깃헙으로 사용자가 로그인이 잘 되면 또 어디론가 보내줘야 하니 이 함수 실행
+);
+...
+
+
+
+// Controllers/useController.js
+...
+// 사용자를 깃헙으로 보낼때 함수
+export const githubLogin = passport.authenticate("github"); // 2. 깃헙에 가서 passport.authenticate 인증실행
+
+
+// 3-1 사용자가 깃헙으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수
+// 내부는 npm passport-github 문서의 형식대로
+export const githubLoginCallback = (accessToken, refreshToken, profile, cb) => {
+  // 변경예쩡!! user생성으로
+  // 그럼 cb는 언제 호출해야 할까? 인증에 성공한 상황에서 호출되야 한다.
+  // 변경예쩡!! user생성으로
+  const {_json: {id, avatar_url, name, email}} = profile; // 사용자가 가져온 정보들 중 필요한것 뽑아냄
+
+  try {
+    const user = await User.findOne({email: email}); // 깃헙으로부터 온 이메일과 동일한 이메일을 가진 사용자 찾기
+    if(user) { // 깃헙으로 로그인 했을시 동일한 이메일 찾으면
+      user.githubId = id; // 깃헙아이디를 사용자 아이디로 해주기
+      user.save(); // 저장하기기
+      return cb(null, user);
+    }  // 만약 사용자 찾지 못하면 계정 만들
+      const newUser = await User.create({ // 만약 사용자 찾지 못하면 계정 만들가
+        email,
+        name,
+        githubId: id,
+        avatarUrl: avatar_url
+      });
+      return cb(null, newUser);
+  } catch (error) {
+    return cb(error);
+  }
+
+}
+
+// 5. 로그인까지 마치면 이부분 실행해주기
+export const postGithubLogIn = (req, res) => {
+  res.send(routes.home) // 홈으로 보내기
+
+}
+...
+
+
+
+// passport.js
+...
+// passport strategy(로그인하는 방식) 사용
+passport.use(User.createStrategy());
+
+
+// 3-0. 사용자가 깃헙에 가서 인증실행 후 돌아올떄
+passport.use(new GithubStrategy({ // passport에게 GithubStrategy를 사용하라고 하는 부분
+    clientID: process.env.GH_ID,
+    clientSecret: process.env.GH_SECRET,
+    callbackURL: `http://localhost:4000${routes.githubCallback}` // 내가 알려준 이 콜백 URL로 돌아온다.
+  }, githubLoginCallback // 사용자가 깃헙으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수
+  )
+);
+...
+
+
+````
+
+* 이런식의 흐름으로 깃헙 로그인이 되는 것 이다. 복잡...ㅠ
